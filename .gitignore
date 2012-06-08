@@ -2,3 +2,8 @@
 .bundle
 Gemfile.lock
 pkg/*
+tmp
+examples/playground.*
+lib/*.so
+*.log
+

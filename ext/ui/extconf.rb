@@ -1,5 +1,8 @@
 require 'mkmf'
-$CFLAGS = "#{$CFLAGS} -Werror -I/usr/include/YaST2"
+RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
+RbConfig::MAKEFILE_CONFIG['CXX'] = ENV['CXX'] if ENV['CXX']
+
+$CFLAGS = "#{$CFLAGS} -I/usr/include/YaST2 -I/usr/include/YaST2/yui"
 
 unless have_library('yui')
   STDERR.puts "Cannot find libyui"
@@ -8,4 +11,7 @@ unless have_library('yui')
 end
 
 find_header 'YUI.h', '/usr/include/YaST2/yui'
+
+$LIBS << " -lyui"
+
 create_makefile('ui')
