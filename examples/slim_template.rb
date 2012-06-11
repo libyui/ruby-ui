@@ -5,9 +5,9 @@ require 'ui/builder/slim'
 template =<<EOF
 main_dialog
   vbox
-    push_button Ok
     hbox
       input_field Enter your name    
+    push_button Ok
 EOF
 
 dialog = UI.slim(template)
