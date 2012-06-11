@@ -15,9 +15,6 @@ module UI
 
       class Compiler < Temple::Filter
 
-        TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
-        CONTAINER_ELEMENTS = [:vbox, :hbox]
-        LEAF_ELEMENTS = [:push_button, :input_field]
 
         set_default_options :dictionary => 'self',
                             :partial => 'partial'
@@ -42,13 +39,13 @@ module UI
         def on_slim_tag(name, attrs, body)    
           previous_parent = @current_parent
 
-          if TOPLEVEL_ELEMENTS.include?(name.to_sym)
+          if UI::Builder::TOPLEVEL_ELEMENTS.include?(name.to_sym)
             obj = UI::Builder.send("create_#{name}".to_sym)
-          elsif LEAF_ELEMENTS.include?(name.to_sym)
+          elsif UI::Builder::LEAF_ELEMENTS.include?(name.to_sym)
             text = compile(body)
             pp text
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent, text)
-          elsif CONTAINER_ELEMENTS.include?(name.to_sym)
+          elsif UI::Builder::CONTAINER_ELEMENTS.include?(name.to_sym)
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent)
           else
             raise "Unknown element type"

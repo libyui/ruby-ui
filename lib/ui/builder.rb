@@ -2,43 +2,37 @@
 module UI
   
   module Builder
+    TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
+    CONTAINER_ELEMENTS = [:vbox, :hbox]
+    LEAF_ELEMENTS = [:push_button, :input_field,:label]
 
-    def main_dialog(&block)
-      popup = Builder.create_main_dialog
-      popup.instance_eval(&block)
-      popup
+    TOPLEVEL_ELEMENTS.each do |element|
+      eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
+        def #{element}(&block)
+          el = Builder.create_#{element}
+          el.instance_eval(&block)
+          el
+        end
+      EOM
     end
 
-    def popup_dialog(&block)
-      popup = Builder.create_popup_dialog
-      popup.instance_eval(&block)
-      popup
+    CONTAINER_ELEMENTS.each do |element|
+      eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
+        def #{element}(&block)
+          el = Builder.create_#{element}(self)
+          el.instance_eval(&block)
+          el
+        end
+      EOM
     end
 
-    def hbox(&block)
-      hbox = Builder.create_hbox(self)
-      hbox.instance_eval(&block)
-      hbox
+    LEAF_ELEMENTS.each do |element|
+      eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
+        def #{element}(text,&block)
+          Builder.create_#{element}(self,text)
+        end
+      EOM
     end
-
-    def vbox(&block)
-      vbox = Builder.create_vbox(self)
-      vbox.instance_eval(&block)
-      vbox
-    end
-
-    def push_button(text, &block)
-      Builder.create_push_button(self, text)
-    end
-
-    def label(text, &block)
-      Builder.create_label(self, text)
-    end
-
-    def input_field(text, &block)
-      Builder.create_input_field(self, text)
-    end
-
   end
 
   extend Builder
