@@ -53,7 +53,7 @@ module UI
             obj = UI::Builder.send("create_#{name}".to_sym)
           elsif UI::Builder::LEAF_ELEMENTS.include?(name_sym)
             text = compile(body)
-            id = text.gsub(/\s/,"_")
+            id ||= text.gsub(/\s/,"_")
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent, text)
           elsif UI::Builder::CONTAINER_ELEMENTS.include?(name_sym)
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent)
