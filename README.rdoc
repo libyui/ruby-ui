@@ -1,0 +1,59 @@
+
+= ruby-ui : a user interface gem for ruby
+
+RUBY-UI IS ALPHA SOFTWARE!
+
+* Duncan Mac-Vicar P. <dmacvicar@suse.de>
+* Josef Reidinger <jreidinger@suse.cz>
+
+== Introduction
+
+ruby-ui is a library that allows you to create simple user interfaces in ruby.
+
+but... Shoes?
+
+ruby-ui is based on the mature libyui library from the YaST
+(SUSE's installer/systems management console) project. This means any user interface
+you write with ruby-ui can be automatically rendered with Qt, Gtk or in text mode (ncurses).
+
+Additionally, ruby-ui provides the following features:
+
+* Sugar: ruby DSL to build the widgets
+* Slim (http://www.slim-lang.org) template support
+
+== Examples
+
+You can create a simple widget in ruby like this:
+
+    require 'ui'
+
+    dialog = UI.main_dialog {
+      vbox {
+        label "Fill in this please"
+        input_field "User Name:"
+        hbox {      
+          push_button "Ok"
+          push_button "Cancel"
+        }
+      }
+    }.wait_for_event
+
+Or you can use a Slim template:
+
+    require 'ui'
+    require 'ui/builder/slim'
+
+    template =<<EOF
+    main_dialog
+      vbox
+        push_button Ok
+        hbox
+          input_field Enter your name    
+    EOF
+
+    dialog = UI.slim(template)
+    dialog.wait_for_event
+
+== License
+
+* ruby-ui is licensed under the MIT License. Mind that libyui is GPL (we will try to change that)
