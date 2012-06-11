@@ -1,7 +1,7 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
 require 'ui'
 
-UI.main_dialog {
+dialog = UI.main_dialog {
   vbox {
     label "Fill in this please"
     input_field "User Name:"
@@ -12,6 +12,7 @@ UI.main_dialog {
   }
 }.wait_for_event
 
+STDERR.puts dialog.inspect
 
 
 
