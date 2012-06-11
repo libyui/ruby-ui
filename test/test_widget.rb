@@ -5,7 +5,12 @@ class WidgetTest < Test::Unit::TestCase
 
   def setup
     @dialog = UI::Builder.create_main_dialog
-    @widget = UI::Builder.create_push_button(@dialog, "Ok")
+    @vbox = UI::Builder.create_vbox(@dialog)
+    @widget = UI::Builder.create_push_button(@vbox, "Ok")
+  end
+
+  def teardown
+    @dialog.destroy!
   end
 
   # Test ruby values as object ids
@@ -25,5 +30,9 @@ class WidgetTest < Test::Unit::TestCase
     assert_not_equal Object.new, @widget.id
   end
 
+  def test_children
+    @vbox.each_child do |child|
+    end
+  end
 
 end

@@ -15,6 +15,19 @@ ui_wrap_widget(YWidget *dlg)
   return Data_Wrap_Struct(cUIWidget, NULL, dealloc, dlg);
 }
 
+VALUE
+each_child(VALUE self)
+{
+    YWidget *ptr = 0L;
+    Data_Get_Struct(self, YWidget, ptr);
+    
+    for (YWidgetListConstIterator it = ptr->childrenBegin();
+         it != ptr->childrenEnd();
+         ++it) {
+      std::cout << *it << std::endl;
+    }
+    return Qnil;
+}
 
 /** 
  * @return [Object] Widget's id
@@ -45,6 +58,13 @@ has_id(VALUE self)
     return ptr->hasId() ? Qtrue : Qfalse;
 }
 
+VALUE
+is_valid(VALUE self)
+{
+    YWidget *ptr = 0L;
+    Data_Get_Struct(self, YWidget, ptr);
+    return ptr->isValid() ? Qtrue : Qfalse;
+}
 
 VALUE cUIWidget;
 void init_ui_widget()
@@ -58,5 +78,7 @@ void init_ui_widget()
   rb_define_method(klass, "id", (ruby_method_vararg *) id, 0);
   rb_define_method(klass, "id=", C_FUNC(set_id), 1);
   rb_define_method(klass, "has_id?", C_FUNC(has_id), 0);
+  rb_define_method(klass, "each_child", C_FUNC(each_child), 0);
+  rb_define_method(klass, "valid?", C_FUNC(is_valid), 0);
 }
 

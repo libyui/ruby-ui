@@ -4,13 +4,23 @@
 static void
 dealloc(YDialog *dlg)
 {
-  dlg->destroy();
+  if (dlg->isValid())
+    dlg->destroy();
 }
 
 VALUE
 ui_wrap_dialog(YDialog *dlg)
 {
   return Data_Wrap_Struct(cUIDialog, NULL, dealloc, dlg);
+}
+
+static VALUE
+destroy(VALUE self)
+{
+    YDialog *ptr = 0L;
+    Data_Get_Struct(self, YDialog, ptr);
+    ptr->destroy();
+    return Qnil;
 }
 
 static VALUE
@@ -32,5 +42,7 @@ void init_ui_dialog()
 
   //rb_define_singleton_method(klass, "new", new, 1);  
   rb_define_method(cUIDialog, "wait_for_event", C_FUNC(wait_for_event), 0);
+  rb_define_method(cUIDialog, "destroy!", C_FUNC(destroy), 0);
+
 }
 
