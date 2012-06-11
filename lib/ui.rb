@@ -8,6 +8,13 @@ module UI
   # build user interfaces using ruby blocks:
   #
   module Builder
+
+    def main_dialog(&block)
+      popup = Builder.create_main_dialog
+      popup.instance_eval(&block)
+      popup
+    end
+
     def popup_dialog(&block)
       popup = Builder.create_popup_dialog
       popup.instance_eval(&block)
@@ -30,6 +37,14 @@ module UI
       Builder.create_push_button(self, text)
     end
 
+    def label(text, &block)
+      Builder.create_label(self, text)
+    end
+
+    def input_field(text, &block)
+      Builder.create_input_field(self, text)
+    end
+
   end
 
   extend Builder
@@ -41,7 +56,6 @@ module UI
   class LayoutBox
     include Builder
   end
-
 
 end
 

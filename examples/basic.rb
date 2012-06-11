@@ -1,9 +1,11 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
 require 'ui'
 
-UI.popup_dialog {
+UI.main_dialog {
   vbox {
-    hbox {
+    label "Fill in this please"
+    input_field "User Name:"
+    hbox {      
       push_button "Ok"
       push_button "Cancel"
     }
