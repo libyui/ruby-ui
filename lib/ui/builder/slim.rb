@@ -24,6 +24,8 @@ module UI
         end
 
         def on_multi(*exps)
+          #remove all newlines it has no sense for us ( maybe in future for some edit box we place exception here :)
+          exps.delete_if { |type,arg| type == :newline }
           return compile(exps.first) if exps.size == 1
           result = [:multi]
           exps.each do |exp|
