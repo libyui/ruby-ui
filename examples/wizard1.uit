@@ -1,0 +1,9 @@
+main_dialog
+  vbox
+    hbox
+      input_field First annoying question
+    input_field Second annoying question
+    hbox
+
+      push_button Cancel
+      push_button OK
