@@ -1,0 +1,8 @@
+main_dialog
+  vbox
+    hbox
+      label No more annoying question
+
+    hbox
+      push_button Cancel
+      push_button OK
