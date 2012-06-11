@@ -9,6 +9,15 @@ module UI
   module Builder
     module Slim
 
+      module IdGenerator
+        def self.generate(name)
+          @@table ||= {}
+          @@table[name] ||= 0
+          @@table[name] += 1
+          num = @@table[name]
+          return "#{name}_#{num}"
+        end
+      end
 
       class Compiler < Temple::Filter
 
@@ -35,20 +44,24 @@ module UI
           end
         end
 
-        def on_slim_tag(name, attrs, body)    
+        def on_slim_tag(name, attrs, body)
           previous_parent = @current_parent
-
-          if UI::Builder::TOPLEVEL_ELEMENTS.include?(name.to_sym)
+          name_sym = name.to_sym
+          attributes = attrs[2..-1].reduce({}) { |acc,el| acc[el[3]] = el[5]; acc }
+          id = attributes["id"]
+          if UI::Builder::TOPLEVEL_ELEMENTS.include?(name_sym)
             obj = UI::Builder.send("create_#{name}".to_sym)
-          elsif UI::Builder::LEAF_ELEMENTS.include?(name.to_sym)
+          elsif UI::Builder::LEAF_ELEMENTS.include?(name_sym)
             text = compile(body)
-            pp text
+            id = text.gsub(/\s/,"_")
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent, text)
-          elsif UI::Builder::CONTAINER_ELEMENTS.include?(name.to_sym)
+          elsif UI::Builder::CONTAINER_ELEMENTS.include?(name_sym)
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent)
           else
             raise "Unknown element type"
           end
+          id ||= IdGenerator.generate name_sym
+          obj.id = id.to_sym
           @current_parent = obj
           compile(body)
           @current_parent = previous_parent
