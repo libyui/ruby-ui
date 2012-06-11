@@ -1,56 +1,7 @@
 #include <yui/YWidgetID.h>
 
 #include "widget.h"
-
-/**
- * Implement a Widget Id based on ruby objects
- */
-class RubyValueWidgetID : public YWidgetID
-{
-public:
-    /**
-     * Constructor
-     */
-    RubyValueWidgetID(VALUE value)
-      : _value(value)
-    {}
-
-    /**
-     * Check if this ID is equal to another.
-     *
-     * Reimplemented from YWidgetID.
-     **/
-    virtual bool isEqual( YWidgetID * otherID ) const
-    {
-        RubyValueWidgetID *that = dynamic_cast<RubyValueWidgetID *>(otherID);
-        if (that) {
-            return rb_eql(this->rubyValue(), that->rubyValue());
-        }
-        return false;
-    }
-
-    /**
-     * Convert the ID value to string.
-     * Used for logging and debugging.
-     *
-     * Reimplemented from YWidgetID.
-     **/
-    virtual string toString() const
-    {
-        return StringValueCStr(_value);
-    }
-
-    /**
-     * Return the ID value.
-     **/
-    VALUE rubyValue() const
-    {
-        return _value;
-    }
-
-private:
-    mutable VALUE _value;
-};
+#include "ruby_value_widget_id.h"
 
 static void
 dealloc(YWidget *wg)
@@ -64,6 +15,10 @@ ui_wrap_widget(YWidget *dlg)
   return Data_Wrap_Struct(cUIWidget, NULL, dealloc, dlg);
 }
 
+
+/** 
+ * @return [Object] Widget's id
+ */
 VALUE
 id(VALUE self)
 {
@@ -99,7 +54,8 @@ void init_ui_widget()
   VALUE klass = rb_define_class_under(ui, "Widget", rb_cObject);
   cUIWidget = klass;
 
-  rb_define_method(klass, "id", C_FUNC(id), 0);
+  // Document-Method: id
+  rb_define_method(klass, "id", (ruby_method_vararg *) id, 0);
   rb_define_method(klass, "id=", C_FUNC(set_id), 1);
   rb_define_method(klass, "has_id?", C_FUNC(has_id), 0);
 }
