@@ -68,6 +68,7 @@ module UI
       class Engine < Temple::Engine
         use ::Slim::Parser, :file, :tabsize, :encoding, :shortcut, :default_tag
         use ::Slim::Interpolation
+        filter :DynamicInliner
         filter :MultiFlattener
         use Compiler
         use(:Generator) { UI::Builder::Slim::Generator.new }
