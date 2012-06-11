@@ -5,8 +5,8 @@ require "ui/version"
 Gem::Specification.new do |s|
   s.name        = "ui"
   s.version     = UI::VERSION
-  s.authors     = ["Duncan Mac-Vicar P."]
-  s.email       = ["dmacvicar@suse.de"]
+  s.authors     = ["Duncan Mac-Vicar P.", "Josef Reidinger"]
+  s.email       = ["dmacvicar@suse.de", "jreidinger@suse.cz"]
   s.homepage    = ""
   s.summary     = %q{TODO: Write a gem summary}
   s.description = %q{TODO: Write a gem description}
