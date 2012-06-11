@@ -7,5 +7,7 @@ TEMPLATE_FILE2 = File.expand_path("../wizard2.uit",__FILE__)
 
 dialog = UI.slim(File.read(TEMPLATE_FILE))
 dialog.wait_for_event
+puts dialog.id
 dialog2 = UI.slim(File.read(TEMPLATE_FILE2))
 dialog2.wait_for_event
+puts dialog2.id
