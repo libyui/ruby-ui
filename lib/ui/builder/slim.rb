@@ -10,9 +10,6 @@ module UI
     module Slim
 
 
-      class Generator < Temple::Generator
-      end
-
       class Compiler < Temple::Filter
 
 
@@ -59,7 +56,7 @@ module UI
         end
       end
 
-      class Generator
+      class Generator < Temple::Generator
         def call(exp)
           exp
         end
