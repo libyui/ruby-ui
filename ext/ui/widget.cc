@@ -134,7 +134,7 @@ VALUE get_properties(VALUE self)
     for (YPropertySet::const_iterator i = prop_set.propertiesBegin();
            i != prop_set.propertiesEnd(); ++i )
     {
-      VALUE name = rb_funcall(rb_str_new2(i->name().c_str()),rb_intern("to_sym"),0);
+      VALUE name = ID2SYM(rb_intern(i->name().c_str()));
       result = rb_ary_push(result,name);
     }
     return result;
