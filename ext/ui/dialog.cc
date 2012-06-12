@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "dialog.h"
+#include "event.h"
 
 static void
 dealloc(YDialog *dlg)
@@ -42,8 +43,8 @@ static VALUE
 wait_for_event(VALUE self)
 {
     YDialog *ptr = ui_unwrap_dialog(self);    
-    ptr->waitForEvent();
-    return Qnil;
+    YEvent * ev = ptr->waitForEvent();
+    return convert_event(ev);
 }
 
 VALUE cUIDialog;

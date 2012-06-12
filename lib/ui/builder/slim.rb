@@ -24,7 +24,8 @@ module UI
 
 
         set_default_options :dictionary => 'self',
-                            :partial => 'partial'
+                            :partial => 'partial',
+                            :context => nil
 
         def on_static(content)
           content.to_s
@@ -35,10 +36,25 @@ module UI
           exps.map { |exp| compile(exp) }
         end
 
+        def parse_attributes attrs
+          attributes = attrs[2..-1].reduce({}) do |acc,el|
+            if el[0] == :slim #slim attrs
+              acc[el[2]] = options[:context].instance_eval el[4];
+            elsif el[0] == :html #match html attrs with static attr
+              acc[el[2]] = el[3][1];
+            else
+              raise "Unknown attribute #{el.inspect}"
+            end
+            acc
+          end
+        end
+
         def on_slim_tag(name, attrs, body)
           previous_parent = @current_parent
           name_sym = name.to_sym
-          attributes = attrs[2..-1].reduce({}) { |acc,el| acc[el[3]] = el[5]; acc }
+          pp attrs
+          attributes = parse_attributes attrs
+          pp attributes
           id = attributes["id"]
           if UI::Builder::TOPLEVEL_ELEMENTS.include?(name_sym)
             obj = UI::Builder.send("create_#{name}".to_sym)
@@ -140,7 +156,7 @@ module UI
         use ::Slim::Interpolation
         use(:Evaluator) { Evaluator.new options[:context] }
         use(:Cleaner) { Cleaner.new options[:context] }
-        use Compiler
+        use(:Compiler) { Compiler.new options[:context] }
         use Generator
       end
 

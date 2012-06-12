@@ -5,8 +5,8 @@
 VALUE widgetObjectMap;
 
 
-static VALUE widget_object_map_ptr_to_ref(void* ptr) {
-  unsigned long value = (unsigned long) ptr;
+static VALUE widget_object_map_ptr_to_ref(const void* ptr) {
+  unsigned long value = (const unsigned long) ptr;
   return LONG2NUM(value);
 }
 
@@ -22,17 +22,17 @@ void widget_object_map_init() {
 }
 
 
-void widget_object_map_add(void* ptr, VALUE object) {
+void widget_object_map_add(const void* ptr, VALUE object) {
     VALUE key = widget_object_map_ptr_to_ref(ptr);
     rb_hash_aset(widgetObjectMap, key, object);
 }
 
-VALUE widget_object_map_for(void* ptr) {
+VALUE widget_object_map_for(const void* ptr) {
     VALUE key = widget_object_map_ptr_to_ref(ptr);
     return rb_hash_aref(widgetObjectMap, key);
 }
 
-void widget_object_map_remove(void* ptr) {    
+void widget_object_map_remove(const void* ptr) {    
     VALUE key = widget_object_map_ptr_to_ref(ptr);
     VALUE object = widget_object_map_for(ptr);
 

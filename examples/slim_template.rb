@@ -6,7 +6,7 @@ template =<<EOF
 main_dialog
   vbox
     hbox
-      input_field Enter your name    
+      input_field Enter your name
     push_button Ok
 EOF
 
