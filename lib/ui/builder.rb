@@ -1,6 +1,5 @@
-
 module UI
-  
+
   module Builder
     TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
     CONTAINER_ELEMENTS = [:vbox, :hbox]

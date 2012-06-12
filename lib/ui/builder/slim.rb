@@ -7,6 +7,7 @@ require 'pp'
 
 module UI
   module Builder
+
     module Slim
 
       module IdGenerator
@@ -19,7 +20,7 @@ module UI
         end
       end
 
-      class Compiler < Temple::Filter
+      class Compiler < ::Slim::Filter
 
 
         set_default_options :dictionary => 'self',
@@ -30,18 +31,8 @@ module UI
         end
 
         def on_multi(*exps)
-          #remove all newlines it has no sense for us ( maybe in future for some edit box we place exception here :)
-          exps.delete_if { |type,arg| type == :newline }
           return compile(exps.first) if exps.size == 1
-          result = [:multi]
-          exps.each do |exp|
-            exp = compile(exp)
-            if exp.is_a?(Array) && exp.first == :multi
-              result.concat(exp[1..-1])
-            else
-              result << exp
-            end
-          end
+          exps.map { |exp| compile(exp) }
         end
 
         def on_slim_tag(name, attrs, body)
@@ -53,12 +44,12 @@ module UI
             obj = UI::Builder.send("create_#{name}".to_sym)
           elsif UI::Builder::LEAF_ELEMENTS.include?(name_sym)
             text = compile(body)
-            id ||= text.gsub(/\s/,"_")
+            id ||= text.gsub(/\s|[-_:.]/,"_")
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent, text)
           elsif UI::Builder::CONTAINER_ELEMENTS.include?(name_sym)
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent)
           else
-            raise "Unknown element type"
+            raise "Unknown element type #{name}"
           end
           id ||= IdGenerator.generate name_sym
           obj.id = id.to_sym
@@ -75,11 +66,49 @@ module UI
         end
       end
 
+      # Filter class that merge statics together, evaluate outputs and clean newlines
+      class Cleaner < ::Slim::Filter
+        set_default_options :dictionary => 'self',
+                            :partial => 'partial',
+                            :context => nil
+        def on_slim_output (*args)
+          ret = options[:contex].instance_eval args[1]
+          [:static,ret.to_s]
+        end
+
+        def on_multi(*exps)
+          #remove all newlines it has no sense for us ( maybe in future for some edit box we place exception here :)
+          exps.delete_if { |type,arg| type == :newline }
+          return compile(exps.first) if exps.size == 1
+          result = [:multi]
+          text = nil
+          exps.each do |exp|
+            exp = compile(exp)
+            case exp.first
+            when :static
+              if text
+                text << exp.last
+              else
+                text = exp.last.dup
+                result << [:static, text]
+              end
+            when :multi
+              result.concat(exp[1..-1])
+              text = nil
+            else
+              result << exp
+              text = nil
+            end
+          end
+          result
+        end
+      end
+
       class Engine < Temple::Engine
+        set_default_options :context => nil
         use ::Slim::Parser, :file, :tabsize, :encoding, :shortcut, :default_tag
         use ::Slim::Interpolation
-        filter :DynamicInliner
-        filter :MultiFlattener
+        use(:Cleaner) { Cleaner.new options[:context] }
         use Compiler
         use(:Generator) { UI::Builder::Slim::Generator.new }
       end
@@ -89,7 +118,7 @@ module UI
 end
 
 module UI
-  def self.slim(io)
-    UI::Builder::Slim::Engine.new.call(io)
+  def self.slim(io,options={})
+    UI::Builder::Slim::Engine.new(options).call(io)
   end
 end

@@ -1,9 +1,13 @@
 main_dialog
+
   vbox
+
     hbox
       input_field id=i1 First annoying question
-    input_field id=i2 Second annoying question
-    hbox
 
+    input_field id=i2
+      | Second annoying question #{Time.now}
+
+    hbox
       push_button Cancel
       push_button OK
