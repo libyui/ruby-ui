@@ -5,6 +5,7 @@ module UI
     CONTAINER_ELEMENTS = [:vbox, :hbox]
     LEAF_ELEMENTS = [:push_button, :input_field,:label]
 
+    # @visibility private
     def initialize_widget(el, opts)
       if opts.has_key?(:id)
         el.id = opts[:id]

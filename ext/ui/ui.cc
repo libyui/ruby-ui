@@ -16,12 +16,18 @@
 VALUE mUI;
 VALUE mUIBuilder;
 
+/*
+ * @visibility private
+ */
 static VALUE create_main_dialog(VALUE self)
 {
   YDialog *dlg = YUI::widgetFactory()->createMainDialog();
   return ui_wrap_dialog(dlg);
 }
 
+/*
+ * @visibility private
+ */
 static VALUE create_popup_dialog(VALUE self)
 {
   YDialog *dlg = YUI::widgetFactory()->createPopupDialog();
@@ -31,6 +37,9 @@ static VALUE create_popup_dialog(VALUE self)
   return object;
 }
 
+/*
+ * @visibility private
+ */
 static VALUE create_vbox(VALUE self, VALUE parent)
 {
   YWidget *ptr = NULL;
@@ -43,6 +52,9 @@ static VALUE create_vbox(VALUE self, VALUE parent)
   return object;
 }
 
+/*
+ * @visibility private
+ */
 static VALUE create_hbox(VALUE self, VALUE parent)
 {
   YWidget *ptr = NULL;
@@ -55,6 +67,9 @@ static VALUE create_hbox(VALUE self, VALUE parent)
   return object;
 }
 
+/*
+ * @visibility private
+ */
 static VALUE create_push_button(VALUE self, VALUE parent, VALUE text)
 {
   YWidget *ptr = NULL;
@@ -67,6 +82,9 @@ static VALUE create_push_button(VALUE self, VALUE parent, VALUE text)
   return object;
 }
 
+/*
+ * @visibility private
+ */
 static VALUE create_label(VALUE self, VALUE parent, VALUE text)
 {
   YWidget *ptr = NULL;
@@ -79,6 +97,9 @@ static VALUE create_label(VALUE self, VALUE parent, VALUE text)
   return object;
 }
 
+/*
+ * @visibility private
+ */
 static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
 {
   YWidget *ptr = NULL;
@@ -93,6 +114,9 @@ static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
 
 extern VALUE widgetObjectMap;
 
+/*
+ * @visibility private
+ */
 static VALUE object_map(VALUE self)
 {
   return widgetObjectMap;
