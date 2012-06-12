@@ -12,6 +12,7 @@
 #include "push_button.h"
 #include "input_field.h"
 #include "label.h"
+#include "spacing.h"
 
 VALUE mUI;
 VALUE mUIBuilder;
@@ -112,6 +113,66 @@ static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
   return object;
 }
 
+/*
+ * @visibility private
+ */
+static VALUE create_hstretch(VALUE self, VALUE parent)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YSpacing *spc = YUI::widgetFactory()->createHStretch(ptr);
+
+  VALUE object = ui_wrap_spacing(spc);
+  widget_object_map_add(spc, object);
+  return object;
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_vstretch(VALUE self, VALUE parent)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YSpacing *spc = YUI::widgetFactory()->createVStretch(ptr);
+
+  VALUE object = ui_wrap_spacing(spc);
+  widget_object_map_add(spc, object);
+  return object;
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_vspacing(VALUE self, VALUE parent)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YSpacing *spc = YUI::widgetFactory()->createVSpacing(ptr);
+
+  VALUE object = ui_wrap_spacing(spc);
+  widget_object_map_add(spc, object);
+  return object;
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_hspacing(VALUE self, VALUE parent)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YSpacing *spc = YUI::widgetFactory()->createHSpacing(ptr);
+
+  VALUE object = ui_wrap_spacing(spc);
+  widget_object_map_add(spc, object);
+  return object;
+}
+
 extern VALUE widgetObjectMap;
 
 /*
@@ -149,6 +210,11 @@ void Init_ui() {
   
   rb_define_singleton_method(mUIBuilder, "create_hbox", RUBY_METHOD_FUNC(create_hbox), 1);
   rb_define_singleton_method(mUIBuilder, "create_vbox", RUBY_METHOD_FUNC(create_vbox), 1);
+
+  rb_define_singleton_method(mUIBuilder, "create_vstretch", RUBY_METHOD_FUNC(create_vstretch), 1);
+  rb_define_singleton_method(mUIBuilder, "create_hstretch", RUBY_METHOD_FUNC(create_hstretch), 1);
+  rb_define_singleton_method(mUIBuilder, "create_vspacingf", RUBY_METHOD_FUNC(create_vspacing), 1);
+  rb_define_singleton_method(mUIBuilder, "create_hspacing", RUBY_METHOD_FUNC(create_hspacing), 1);
 
   rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);
