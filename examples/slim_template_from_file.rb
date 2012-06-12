@@ -8,6 +8,7 @@ TEMPLATE_FILE2 = File.expand_path("../wizard2.uit",__FILE__)
 dialog = UI.slim(File.read(TEMPLATE_FILE))
 puts dialog.id
 puts dialog[:Enabled]
+puts dialog.properties.inspect
 dialog.wait_for_event
 dialog2 = UI.slim(File.read(TEMPLATE_FILE2))
 dialog2.wait_for_event

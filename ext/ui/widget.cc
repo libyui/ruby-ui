@@ -82,6 +82,20 @@ is_valid(VALUE self)
     return ptr->isValid() ? Qtrue : Qfalse;
 }
 
+VALUE get_properties(VALUE self)
+{
+    YWidget *ptr = ui_unwrap_widget(self);
+    const YPropertySet & prop_set = ptr->propertySet();
+    VALUE result = rb_ary_new2(prop_set.size());
+    for (YPropertySet::const_iterator i = prop_set.propertiesBegin();
+           i != prop_set.propertiesEnd(); ++i )
+    {
+      VALUE name = rb_funcall(rb_str_new2(i->name().c_str()),rb_intern("to_sym"),0);
+      result = rb_ary_push(result,name);
+    }
+    return result;
+}
+
 VALUE
 get_property(VALUE self, VALUE id)
 {
@@ -146,5 +160,6 @@ void init_ui_widget()
   rb_define_method(klass, "valid?", C_FUNC(is_valid), 0);
   rb_define_method(klass, "[]", C_FUNC(get_property), 1);
   rb_define_method(klass, "[]=", C_FUNC(set_property), 2);
+  rb_define_method(klass, "properties", C_FUNC(get_properties), 0);
 }
 
