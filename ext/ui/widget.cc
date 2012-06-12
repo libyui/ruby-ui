@@ -139,7 +139,7 @@ set_property(VALUE self, VALUE id, VALUE value)
     switch (TYPE(value))
     {
     case T_STRING:
-        yui_value = YPropertyValue(STR2CSTR(value));
+        yui_value = YPropertyValue(StringValueCStr(value));
         break;
     case T_TRUE:
     case T_FALSE:
@@ -150,7 +150,7 @@ set_property(VALUE self, VALUE id, VALUE value)
         yui_value = YPropertyValue((YInteger)NUM2INT(value));
         break;
     }
-    bool response = ptr->setProperty(RSTRING_PTR(id_str),yui_value);
+    bool response = ptr->setProperty(StringValueCStr(id_str),yui_value);
     return response;
 }
 
