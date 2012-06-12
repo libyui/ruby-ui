@@ -91,6 +91,13 @@ static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
   return object;
 }
 
+extern VALUE widgetObjectMap;
+
+static VALUE object_map(VALUE self)
+{
+  return widgetObjectMap;
+}
+
 extern "C" {
 
 void Init_ui() {
@@ -110,6 +117,8 @@ void Init_ui() {
   init_ui_push_button();
   init_ui_label();
   init_ui_input_field();
+
+  rb_define_singleton_method(mUI, "object_map", C_FUNC(object_map), 0);
 
   rb_define_singleton_method(mUIBuilder, "create_main_dialog", C_FUNC(create_popup_dialog), 0);
   rb_define_singleton_method(mUIBuilder, "create_popup_dialog", C_FUNC(create_popup_dialog), 0);

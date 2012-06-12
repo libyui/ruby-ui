@@ -6,10 +6,17 @@ module UI
     CONTAINER_ELEMENTS = [:vbox, :hbox]
     LEAF_ELEMENTS = [:push_button, :input_field,:label]
 
+    def initialize_widget(el, opts)
+      if opts.has_key?(:id)
+        el.id = opts[:id]
+      end
+    end
+
     TOPLEVEL_ELEMENTS.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
-        def #{element}(&block)
+        def #{element}(opts={}, &block)
           el = Builder.create_#{element}
+          initialize_widget(el, opts)
           el.instance_eval(&block)
           el
         end
@@ -18,8 +25,9 @@ module UI
 
     CONTAINER_ELEMENTS.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
-        def #{element}(&block)
+        def #{element}(opts={}, &block)
           el = Builder.create_#{element}(self)
+          initialize_widget(el, opts)
           el.instance_eval(&block)
           el
         end
@@ -28,8 +36,10 @@ module UI
 
     LEAF_ELEMENTS.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
-        def #{element}(text,&block)
-          Builder.create_#{element}(self,text)
+        def #{element}(text, opts={}, &block)
+          el = Builder.create_#{element}(self,text)
+          initialize_widget(el, opts)
+          el
         end
       EOM
     end

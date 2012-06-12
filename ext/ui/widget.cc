@@ -81,6 +81,24 @@ is_valid(VALUE self)
     return ptr->isValid() ? Qtrue : Qfalse;
 }
 
+VALUE
+find_widget(VALUE self, VALUE id)
+{
+  YWidget *ptr = ui_unwrap_widget(self);
+  YWidgetID *idPtr = new RubyValueWidgetID(id);
+  YWidget * retPtr = ptr->findWidget(idPtr, false);
+  //yuiDebug() << "ptr: " << (unsigned long)  retPtr << std::endl;
+  delete idPtr;
+  return retPtr ? widget_object_map_for(idPtr) : Qnil;
+}
+
+VALUE
+to_s(VALUE self)
+{
+    YWidget *ptr = ui_unwrap_widget(self);
+    return rb_str_new2(ptr->debugLabel().c_str());
+}
+
 VALUE cUIWidget;
 void init_ui_widget()
 {
@@ -90,11 +108,13 @@ void init_ui_widget()
   cUIWidget = klass;
 
   // Document-Method: id
-  rb_define_method(klass, "id", (ruby_method_vararg *) id, 0);
+  //rb_define_method(klass, "to_s", C_FUNC(to_s), 0);
+  rb_define_method(klass, "id", C_FUNC(id), 0);
   rb_define_method(klass, "id=", C_FUNC(set_id), 1);
   rb_define_method(klass, "has_id?", C_FUNC(has_id), 0);
   rb_define_method(klass, "each_child", C_FUNC(each_child), 0);
   rb_define_method(klass, "children_count", C_FUNC(children_count), 0);
   rb_define_method(klass, "valid?", C_FUNC(is_valid), 0);
+  rb_define_method(klass, "find_widget", C_FUNC(find_widget), 1);
 }
 
