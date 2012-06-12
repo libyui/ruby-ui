@@ -18,7 +18,7 @@ class WidgetTest < Test::Unit::TestCase
 
   # Test ruby values as object ids
   def test_id
-    
+
     assert @btn.has_id?
     assert_equal :btn1, @btn.id
 
@@ -46,6 +46,18 @@ class WidgetTest < Test::Unit::TestCase
     assert_nil btn
 
 
+  end
+
+  def test_properties
+    assert @dialog.properties.include? :HWeight
+    assert @dialog.properties.include? :Enabled
+    assert @dialog[:Enabled]
+    @dialog[:Enabled] = false
+    assert !@dialog[:Enabled]
+    assert @btn.properties.include? :Label
+    assert_equal "Ok",@btn[:Label]
+    @btn[:Label] = "Fail"
+    assert "Fail",@btn[:Label]
   end
 
 end
