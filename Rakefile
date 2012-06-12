@@ -10,6 +10,7 @@ Rake::TestTask.new do |t|
 end
 
 task :default => [:compile]
+task :recompile => [:clobber,:compile]
 gem 'rake-compiler', '>= 0.4.1'
 require 'rake/extensiontask'
 Rake::ExtensionTask.new('ui')
