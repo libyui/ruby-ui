@@ -18,6 +18,7 @@ puts event.inspect
 event.widget[:Label] = "No longer OK"
 again = 0
 dialog.wait_for_event do |event|
+  break unless event.is_a? UI::WidgetEvent
   event.widget[:Label] = "Loop version"
   again += 1
   again < 2
