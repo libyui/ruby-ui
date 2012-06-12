@@ -85,8 +85,7 @@ is_valid(VALUE self)
 VALUE
 get_property(VALUE self, VALUE id)
 {
-    YWidget *ptr = 0L;
-    Data_Get_Struct(self, YWidget, ptr);
+    YWidget *ptr = ui_unwrap_widget(self);
     VALUE id_str = rb_funcall(id,rb_intern("to_s"),0);
     const YPropertyValue & property = ptr->getProperty(RSTRING_PTR(id_str));
     VALUE response = Qnil;
@@ -109,8 +108,7 @@ get_property(VALUE self, VALUE id)
 VALUE
 set_property(VALUE self, VALUE id, VALUE value)
 {
-    YWidget *ptr = 0L;
-    Data_Get_Struct(self, YWidget, ptr);
+    YWidget *ptr = ui_unwrap_widget(self);
     VALUE id_str = rb_funcall(id,rb_intern("to_s"),0);
     YPropertyValue yui_value;
     switch (TYPE(value))
