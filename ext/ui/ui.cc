@@ -118,17 +118,17 @@ void Init_ui() {
   init_ui_label();
   init_ui_input_field();
 
-  rb_define_singleton_method(mUI, "object_map", C_FUNC(object_map), 0);
+  rb_define_singleton_method(mUI, "object_map", RUBY_METHOD_FUNC(object_map), 0);
 
-  rb_define_singleton_method(mUIBuilder, "create_main_dialog", C_FUNC(create_popup_dialog), 0);
-  rb_define_singleton_method(mUIBuilder, "create_popup_dialog", C_FUNC(create_popup_dialog), 0);
+  rb_define_singleton_method(mUIBuilder, "create_main_dialog", RUBY_METHOD_FUNC(create_popup_dialog), 0);
+  rb_define_singleton_method(mUIBuilder, "create_popup_dialog", RUBY_METHOD_FUNC(create_popup_dialog), 0);
   
-  rb_define_singleton_method(mUIBuilder, "create_hbox", C_FUNC(create_hbox), 1);
-  rb_define_singleton_method(mUIBuilder, "create_vbox", C_FUNC(create_vbox), 1);
+  rb_define_singleton_method(mUIBuilder, "create_hbox", RUBY_METHOD_FUNC(create_hbox), 1);
+  rb_define_singleton_method(mUIBuilder, "create_vbox", RUBY_METHOD_FUNC(create_vbox), 1);
 
-  rb_define_singleton_method(mUIBuilder, "create_push_button", C_FUNC(create_push_button), 2);
-  rb_define_singleton_method(mUIBuilder, "create_label", C_FUNC(create_label), 2);
-  rb_define_singleton_method(mUIBuilder, "create_input_field", C_FUNC(create_input_field), 2);
+  rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
+  rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);
+  rb_define_singleton_method(mUIBuilder, "create_input_field", RUBY_METHOD_FUNC(create_input_field), 2);
 }
 
 }

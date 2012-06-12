@@ -55,8 +55,8 @@ void init_ui_dialog()
   cUIDialog = klass;
 
   //rb_define_singleton_method(klass, "new", new, 1);  
-  rb_define_method(cUIDialog, "wait_for_event", C_FUNC(wait_for_event), 0);
-  rb_define_method(cUIDialog, "destroy!", C_FUNC(destroy), 0);
+  rb_define_method(cUIDialog, "wait_for_event", RUBY_METHOD_FUNC(wait_for_event), 0);
+  rb_define_method(cUIDialog, "destroy!", RUBY_METHOD_FUNC(destroy), 0);
 
 }
 
