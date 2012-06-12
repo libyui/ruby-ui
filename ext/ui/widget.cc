@@ -5,6 +5,14 @@
 #include "widget_object_map.h"
 #include "ruby_value_widget_id.h"
 
+/*
+ * Document-class: UI::Widget
+ * Base class for all UI widgets
+ *
+ * You can't create abstract Widget objects
+ * @see UI
+ */
+
 static void
 dealloc(YWidget *wg)
 {
@@ -27,6 +35,10 @@ ui_unwrap_widget(VALUE wdg)
   return ptr;
 }
 
+/*
+ * For a block {|child| ... } pass every child to the block
+ * @yield [child] A child of this widget
+ */
 VALUE
 each_child(VALUE self)
 {
@@ -42,6 +54,9 @@ each_child(VALUE self)
     return Qnil;
 }
 
+/*
+ * @return [Fixnum] Number of children this widget has
+ */
 VALUE
 children_count(VALUE self)
 {
@@ -49,7 +64,7 @@ children_count(VALUE self)
     return INT2NUM(ptr->childrenCount());
 }
 
-/** 
+/*
  * @return [Object] Widget's id
  */
 VALUE
@@ -60,6 +75,11 @@ id(VALUE self)
     return id ? id->rubyValue() : Qnil;
 }
 
+/*
+ * Sets the widget id
+ * @param [Object] id Ruby object to be used as an id
+ * @see Widget#id
+ */
 VALUE
 set_id(VALUE self, VALUE id)
 {
@@ -68,6 +88,9 @@ set_id(VALUE self, VALUE id)
     return id;
 }
 
+/*
+ * @return [Boolean] True if the widget has an assigned id
+ */
 VALUE
 has_id(VALUE self)
 {
@@ -75,6 +98,9 @@ has_id(VALUE self)
     return ptr->hasId() ? Qtrue : Qfalse;
 }
 
+/*
+ * @return [Boolean] True if the widget is valid
+ */
 VALUE
 is_valid(VALUE self)
 {
@@ -82,6 +108,13 @@ is_valid(VALUE self)
     return ptr->isValid() ? Qtrue : Qfalse;
 }
 
+/*
+ * @return [Widget] Widget with the requested id or null if not found
+ * @param [Object] id id of the widget we are looking for
+ * @example
+ *   btn = dialog.find_widget(:btn1)
+ *   btn.is_a?(UI::Button) => true
+ */
 VALUE
 find_widget(VALUE self, VALUE id)
 {
@@ -107,6 +140,16 @@ VALUE get_properties(VALUE self)
     return result;
 }
 
+/*
+ * @return [Object] Property named id
+ * @param [String] Name of the property.
+ *
+ * @note You can use a Symbol, it will be internally
+ *   converted to a String
+ *
+ * @example
+ *   val = widget[:Label]
+ */
 VALUE
 get_property(VALUE self, VALUE id)
 {
@@ -130,6 +173,15 @@ get_property(VALUE self, VALUE id)
     return response;
 }
 
+/*
+ * Sets a widget property
+ * @see Widget#[]
+ *
+ * @param [String] id id of the property.
+ *
+ * @note You can use a Symbol, it will be internally
+ *   converted to a String
+ */
 VALUE
 set_property(VALUE self, VALUE id, VALUE value)
 {
@@ -162,15 +214,15 @@ void init_ui_widget()
   VALUE klass = rb_define_class_under(ui, "Widget", rb_cObject);
   cUIWidget = klass;
 
-  rb_define_method(klass, "id", C_FUNC(id), 0);
-  rb_define_method(klass, "id=", C_FUNC(set_id), 1);
-  rb_define_method(klass, "has_id?", C_FUNC(has_id), 0);
-  rb_define_method(klass, "each_child", C_FUNC(each_child), 0);
-  rb_define_method(klass, "children_count", C_FUNC(children_count), 0);
-  rb_define_method(klass, "valid?", C_FUNC(is_valid), 0);
-  rb_define_method(klass, "find_widget", C_FUNC(find_widget), 1);
-  rb_define_method(klass, "[]", C_FUNC(get_property), 1);
-  rb_define_method(klass, "[]=", C_FUNC(set_property), 2);
-  rb_define_method(klass, "properties", C_FUNC(get_properties), 0);
+  rb_define_method(klass, "id", RUBY_METHOD_FUNC(id), 0);
+  rb_define_method(klass, "id=", RUBY_METHOD_FUNC(set_id), 1);
+  rb_define_method(klass, "has_id?", RUBY_METHOD_FUNC(has_id), 0);
+  rb_define_method(klass, "each_child", RUBY_METHOD_FUNC(each_child), 0);
+  rb_define_method(klass, "children_count", RUBY_METHOD_FUNC(children_count), 0);
+  rb_define_method(klass, "valid?", RUBY_METHOD_FUNC(is_valid), 0);
+  rb_define_method(klass, "find_widget", RUBY_METHOD_FUNC(find_widget), 1);
+  rb_define_method(klass, "[]", RUBY_METHOD_FUNC(get_property), 1);
+  rb_define_method(klass, "[]=", RUBY_METHOD_FUNC(set_property), 2);
+  rb_define_method(klass, "properties", RUBY_METHOD_FUNC(get_properties), 0);
 }
 
