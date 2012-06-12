@@ -2,15 +2,15 @@
 #include "spacing.h"
 
 static void
-dealloc(YSpacing *btn)
+dealloc(YSpacing *spc)
 {
   
 }
 
 VALUE
-ui_wrap_spacing(YSpacing *lbl)
+ui_wrap_spacing(YSpacing *spc)
 {
-  return Data_Wrap_Struct(cUISpacing, NULL, dealloc, lbl);
+  return Data_Wrap_Struct(cUISpacing, NULL, dealloc, spc);
 }
 
 VALUE cUISpacing;

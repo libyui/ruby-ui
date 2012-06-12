@@ -7,6 +7,6 @@
 void init_ui_spacing();
 
 extern VALUE cUISpacing;
-VALUE ui_wrap_spacing(YSpacing *btn);
+VALUE ui_wrap_spacing(YSpacing *spc);
 
 #endif
