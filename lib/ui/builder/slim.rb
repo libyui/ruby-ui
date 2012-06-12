@@ -11,10 +11,10 @@ module UI
 
       module IdGenerator
         def self.generate(name)
-          @@table ||= {}
-          @@table[name] ||= 0
-          @@table[name] += 1
-          num = @@table[name]
+          @table ||= {}
+          @table[name] ||= 0
+          @table[name] += 1
+          num = @table[name]
           return "#{name}_#{num}"
         end
       end
