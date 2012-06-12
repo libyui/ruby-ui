@@ -1,7 +1,7 @@
 main_dialog
   vbox
     hbox
-      input_field id=i1 First annoying question
+      input_field id=45 First annoying question
     input_field id=i2 Second annoying question
     hbox
 
