@@ -8,8 +8,13 @@ require 'pp'
 module UI
   module Builder
 
+    # This module allows to build user interfaces
+    # using slim templates (http://www.slim-lang.org)
+    #
+    # @see UI#slim
     module Slim
 
+      # @visibility private
       module IdGenerator
         def self.generate(name)
           @table ||= {}
@@ -20,8 +25,8 @@ module UI
         end
       end
 
+      # @visibility private
       class Compiler < ::Slim::Filter
-
 
         set_default_options :dictionary => 'self',
                             :partial => 'partial'
@@ -61,12 +66,14 @@ module UI
         end
       end
 
+      # @visibility private
       class Generator < Temple::Generator
         def call(exp)
           exp
         end
       end
 
+      # @visibility private
       class Evaluator < ::Slim::Filter
         set_default_options :dictionary => 'self',
                             :partial => 'partial',
@@ -76,6 +83,7 @@ module UI
           [:static,ret.to_s]
         end
 
+        # @visibility private
         def on_multi(*exps)
           #remove all newlines it has no sense for us ( maybe in future for some edit box we place exception here :)
           exps.delete_if { |type,arg| type == :newline }
@@ -102,7 +110,9 @@ module UI
           result
         end
       end
+
       # Filter class that merge statics together, evaluate outputs and clean newlines
+      # @visibility private
       class Cleaner < ::Slim::Filter
         set_default_options :dictionary => 'self',
                             :partial => 'partial',
@@ -134,6 +144,7 @@ module UI
         end
       end
 
+      # @visibility private
       class Engine < Temple::Engine
         set_default_options :context => nil
         use ::Slim::Parser, :file, :tabsize, :encoding, :shortcut, :default_tag
@@ -149,6 +160,10 @@ module UI
 end
 
 module UI
+
+  # Builds a widget/dialog using a slim template
+  # 
+  # {include:file:examples/slim_template.rb}
   def self.slim(io,options={})
     UI::Builder::Slim::Engine.new(options).call(io)
   end

@@ -6,6 +6,11 @@ class DialogTest < Test::Unit::TestCase
   def test_destroy_invalid
     
     dialog = UI::Builder.create_main_dialog
+
+    assert !dialog.open?
+    dialog.open
+    assert dialog.open?
+
     dialog.destroy!
 
     assert_raises RuntimeError do
