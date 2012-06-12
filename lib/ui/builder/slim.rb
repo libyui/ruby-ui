@@ -44,6 +44,7 @@ module UI
             obj = UI::Builder.send("create_#{name}".to_sym)
           elsif UI::Builder::LEAF_ELEMENTS.include?(name_sym)
             text = compile(body)
+            pp text
             id ||= text.gsub(/\s|[-_:.]/,"_")
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent, text)
           elsif UI::Builder::CONTAINER_ELEMENTS.include?(name_sym)
@@ -66,8 +67,7 @@ module UI
         end
       end
 
-      # Filter class that merge statics together, evaluate outputs and clean newlines
-      class Cleaner < ::Slim::Filter
+      class Evaluator < ::Slim::Filter
         set_default_options :dictionary => 'self',
                             :partial => 'partial',
                             :context => nil
@@ -79,6 +79,36 @@ module UI
         def on_multi(*exps)
           #remove all newlines it has no sense for us ( maybe in future for some edit box we place exception here :)
           exps.delete_if { |type,arg| type == :newline }
+          result = [:multi]
+          text = nil
+          exps.each do |exp|
+            exp = compile(exp)
+            case exp.first
+            when :static
+              if text
+                text << exp.last
+              else
+                text = exp.last.dup
+                result << [:static, text]
+              end
+            when :multi
+              result.concat(exp[1..-1])
+              text = nil
+            else
+              result << exp
+              text = nil
+            end
+          end
+          result
+        end
+      end
+      # Filter class that merge statics together, evaluate outputs and clean newlines
+      class Cleaner < ::Slim::Filter
+        set_default_options :dictionary => 'self',
+                            :partial => 'partial',
+                            :context => nil
+
+        def on_multi(*exps)
           return compile(exps.first) if exps.size == 1
           result = [:multi]
           text = nil
@@ -108,9 +138,10 @@ module UI
         set_default_options :context => nil
         use ::Slim::Parser, :file, :tabsize, :encoding, :shortcut, :default_tag
         use ::Slim::Interpolation
+        use(:Evaluator) { Evaluator.new options[:context] }
         use(:Cleaner) { Cleaner.new options[:context] }
         use Compiler
-        use(:Generator) { UI::Builder::Slim::Generator.new }
+        use Generator
       end
 
     end
