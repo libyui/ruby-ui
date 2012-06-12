@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "slim"
 
   s.add_development_dependency("rake-compiler", [">= 0.8"])
+  s.add_development_dependency("yard")
   s.extensions  << 'ext/ui/extconf.rb'
 
 end
