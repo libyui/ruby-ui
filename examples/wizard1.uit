@@ -5,5 +5,5 @@ main_dialog
     input_field id=i2 Second annoying question
     hbox
 
-      push_button Cancel
+      push_button Canc&el
       push_button OK
