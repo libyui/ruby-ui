@@ -3,7 +3,7 @@ module UI
   module Builder
     TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
     CONTAINER_ELEMENTS = [:vbox, :hbox, :hstretch, :vstretch,
-                          :hspacing, :vspacing]
+                          :hspacing, :vspacing, :hsquash, :vsquash, :hvsquash]
     LEAF_ELEMENTS = [:push_button, :input_field,:label]
 
     # @visibility private

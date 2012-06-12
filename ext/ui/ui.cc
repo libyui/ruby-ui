@@ -173,6 +173,51 @@ static VALUE create_hspacing(VALUE self, VALUE parent)
   return object;
 }
 
+/*
+ * @visibility private
+ */
+static VALUE create_hsquash(VALUE self, VALUE parent)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YSquash *spc = YUI::widgetFactory()->createHSquash(ptr);
+
+  VALUE object = ui_wrap_spacing(spc);
+  widget_object_map_add(spc, object);
+  return object;
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_vsquash(VALUE self, VALUE parent)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YSquash *spc = YUI::widgetFactory()->createVSquash(ptr);
+
+  VALUE object = ui_wrap_spacing(spc);
+  widget_object_map_add(spc, object);
+  return object;
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_hvsquash(VALUE self, VALUE parent)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YSquash *spc = YUI::widgetFactory()->createHVSquash(ptr);
+
+  VALUE object = ui_wrap_spacing(spc);
+  widget_object_map_add(spc, object);
+  return object;
+}
+
 extern VALUE widgetObjectMap;
 
 /*
@@ -215,6 +260,11 @@ void Init_ui() {
   rb_define_singleton_method(mUIBuilder, "create_hstretch", RUBY_METHOD_FUNC(create_hstretch), 1);
   rb_define_singleton_method(mUIBuilder, "create_vspacingf", RUBY_METHOD_FUNC(create_vspacing), 1);
   rb_define_singleton_method(mUIBuilder, "create_hspacing", RUBY_METHOD_FUNC(create_hspacing), 1);
+
+  rb_define_singleton_method(mUIBuilder, "create_hsquash", RUBY_METHOD_FUNC(create_hsquash), 1);
+  rb_define_singleton_method(mUIBuilder, "create_vsquash", RUBY_METHOD_FUNC(create_vsquash), 1);
+  rb_define_singleton_method(mUIBuilder, "create_hvsquash", RUBY_METHOD_FUNC(create_hvsquash), 1);
+  
 
   rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);
