@@ -9,5 +9,6 @@ main_dialog
       | Second annoying question #{Time.now}
 
     hbox
-      push_button Cancel
+
+      push_button Canc&el
       push_button OK

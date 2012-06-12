@@ -6,7 +6,9 @@ class WidgetTest < Test::Unit::TestCase
   def setup
     @dialog = UI::Builder.create_main_dialog
     @vbox = UI::Builder.create_vbox(@dialog)
-    @widget = UI::Builder.create_push_button(@vbox, "Ok")
+    @vbox1 = UI::Builder.create_hbox(@vbox)
+    @hbox1 = UI::Builder.create_hbox(@vbox)
+    @widget = UI::Builder.create_push_button(@vbox1, "Ok")
   end
 
   def teardown
@@ -31,7 +33,12 @@ class WidgetTest < Test::Unit::TestCase
   end
 
   def test_children
+    assert_equal 1, @dialog.children_count
+    assert_equal 2, @vbox.children_count
+    assert_equal 0, @widget.children_count
+
     @vbox.each_child do |child|
+      puts child.inspect
     end
   end
 
