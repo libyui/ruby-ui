@@ -8,8 +8,10 @@ module UI
 
     # @visibility private
     def initialize_widget(el, opts)
-      if opts.has_key?(:id)
-        el.id = opts[:id]
+      el.id = opts[:id] if opts[:id]
+      properties = el.properties
+      opts.each do |k,v|
+        el[k] = v if properties.include? k
       end
     end
 

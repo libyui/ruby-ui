@@ -8,10 +8,10 @@
  */
 void widget_object_map_init();
 
-void widget_object_map_add(void* ptr, VALUE object);
+void widget_object_map_add(const void* ptr, VALUE object);
 
-VALUE widget_object_map_for(void* ptr);
+VALUE widget_object_map_for(const void* ptr);
 
-void widget_object_map_remove(void* ptr);
+void widget_object_map_remove(const void* ptr);
 
 #endif
