@@ -55,9 +55,13 @@ class WidgetTest < Test::Unit::TestCase
     @dialog[:Enabled] = false
     assert !@dialog[:Enabled]
     assert @btn.properties.include? :Label
-    assert_equal "Ok",@btn[:Label]
+    assert_equal "Ok", @btn[:Label]
     @btn[:Label] = "Fail"
-    assert "Fail",@btn[:Label]
+    assert "Fail", @btn[:Label]
   end
 
+  def test_builder_properties_passing
+    @dialog = UI.main_dialog(:id => "Test", :Enabled => false) {}
+    assert !@dialog[:Enabled]
+  end
 end
