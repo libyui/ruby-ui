@@ -4,6 +4,7 @@ main_dialog
       label
         'No more annoying question\NO
         'But we have a bunch of annoying examples
+    label you pass #{self[:first]} and #{self[:second]}
 
     hbox
       push_button Cancel

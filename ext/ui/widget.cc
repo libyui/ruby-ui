@@ -90,7 +90,7 @@ find_widget(VALUE self, VALUE id)
   YWidget * retPtr = ptr->findWidget(idPtr, false);
   //yuiDebug() << "ptr: " << (unsigned long)  retPtr << std::endl;
   delete idPtr;
-  return retPtr ? widget_object_map_for(idPtr) : Qnil;
+  return retPtr ? widget_object_map_for(retPtr) : Qnil;
 }
 
 VALUE get_properties(VALUE self)

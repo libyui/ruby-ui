@@ -11,7 +11,10 @@ puts dialog[:Enabled]
 puts dialog.properties.inspect
 dialog.wait_for_event
 puts dialog.id
+map = {}
+map[:first] = dialog.find_widget(:i1)[:Value]
+map[:second] = dialog.find_widget(:i2)[:Value]
 dialog.destroy!
-dialog2 = UI.slim(File.read(TEMPLATE_FILE2))
+dialog2 = UI.slim(File.read(TEMPLATE_FILE2),:context => map)
 dialog2.wait_for_event
 puts dialog2.id

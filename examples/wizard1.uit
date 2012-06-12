@@ -3,9 +3,9 @@ main_dialog
   vbox
 
     hbox
-      input_field id=i1 First annoying question
+      input_field id=:i1 First annoying question
 
-    input_field id=i2
+    input_field id=:i2 InputMaxLength=5
       | Second annoying question #{Time.now}
 
     hbox
