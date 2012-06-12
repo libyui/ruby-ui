@@ -11,7 +11,10 @@ end
 
 task :default => [:compile]
 task :recompile => [:clobber,:compile]
+
 gem 'rake-compiler', '>= 0.4.1'
 require 'rake/extensiontask'
-Rake::ExtensionTask.new('ui')
+Rake::ExtensionTask.new('ui') do |ext|
+  ext.source_pattern = "*.{c,cc}"
+end
 
