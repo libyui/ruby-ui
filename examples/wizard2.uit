@@ -1,7 +1,9 @@
 main_dialog
   vbox
     hbox
-      label No more annoying question
+      label
+        'No more annoying question\NO
+        'But we have a bunch of annoying examples
 
     hbox
       push_button Cancel
