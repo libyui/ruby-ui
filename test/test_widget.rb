@@ -43,7 +43,7 @@ class WidgetTest < Test::Unit::TestCase
     end
 
     btn = @dialog.find_widget(:btn1)
-    assert_nil btn
+    assert_not_nil btn
 
 
   end
