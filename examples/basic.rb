@@ -10,7 +10,12 @@ dialog = UI.main_dialog {
       push_button "Cancel"
     }
   }
-}.wait_for_event
+}
+#.wait_for_event
+
+dialog.each_child do |child|
+  puts child
+end
 
 STDERR.puts dialog.inspect
 
