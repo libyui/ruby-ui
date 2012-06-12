@@ -1,0 +1,24 @@
+#include "widget.h"
+#include "rich_text.h"
+
+static void
+dealloc(YRichText *rich)
+{
+  
+}
+
+VALUE
+ui_wrap_rich_text(YRichText *rich)
+{
+  return Data_Wrap_Struct(cUIRichText, NULL, dealloc, rich);
+}
+
+VALUE cUIRichText;
+void init_ui_rich_text()
+{
+  VALUE ui = rb_define_module("UI");
+
+  VALUE klass = rb_define_class_under(ui, "RichText", cUIWidget);
+  cUIRichText = klass;
+}
+

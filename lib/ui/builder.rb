@@ -4,7 +4,7 @@ module UI
     TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
     CONTAINER_ELEMENTS = [:vbox, :hbox, :hstretch, :vstretch,
                           :hspacing, :vspacing, :hsquash, :vsquash, :hvsquash]
-    LEAF_ELEMENTS = [:push_button, :input_field,:label]
+    LEAF_ELEMENTS = [:push_button, :input_field,:label, :rich_text]
 
     # @visibility private
     def initialize_widget(el, opts)
@@ -53,6 +53,14 @@ module UI
   end
 
   class LayoutBox
+    include Builder
+  end
+
+  class Spacing
+    include Builder
+  end
+
+  class Squash
     include Builder
   end
 

@@ -8,11 +8,13 @@
 #include "ui.h"
 #include "widget.h"
 #include "dialog.h"
-#include "layout_box.h"
-#include "push_button.h"
 #include "input_field.h"
+#include "layout_box.h"
 #include "label.h"
+#include "push_button.h"
+#include "rich_text.h"
 #include "spacing.h"
+#include "squash.h"
 
 VALUE mUI;
 VALUE mUIBuilder;
@@ -116,6 +118,21 @@ static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
 /*
  * @visibility private
  */
+static VALUE create_rich_text(VALUE self, VALUE parent, VALUE text)
+{
+  YWidget *ptr = NULL;
+  Data_Get_Struct(parent, YWidget, ptr);
+
+  YRichText *rich = YUI::widgetFactory()->createRichText(ptr, StringValuePtr(text));
+
+  VALUE object = ui_wrap_rich_text(rich);
+  widget_object_map_add(rich, object);
+  return object;
+}
+
+/*
+ * @visibility private
+ */
 static VALUE create_hstretch(VALUE self, VALUE parent)
 {
   YWidget *ptr = NULL;
@@ -183,7 +200,7 @@ static VALUE create_hsquash(VALUE self, VALUE parent)
 
   YSquash *spc = YUI::widgetFactory()->createHSquash(ptr);
 
-  VALUE object = ui_wrap_spacing(spc);
+  VALUE object = ui_wrap_squash(spc);
   widget_object_map_add(spc, object);
   return object;
 }
@@ -198,7 +215,7 @@ static VALUE create_vsquash(VALUE self, VALUE parent)
 
   YSquash *spc = YUI::widgetFactory()->createVSquash(ptr);
 
-  VALUE object = ui_wrap_spacing(spc);
+  VALUE object = ui_wrap_squash(spc);
   widget_object_map_add(spc, object);
   return object;
 }
@@ -213,7 +230,7 @@ static VALUE create_hvsquash(VALUE self, VALUE parent)
 
   YSquash *spc = YUI::widgetFactory()->createHVSquash(ptr);
 
-  VALUE object = ui_wrap_spacing(spc);
+  VALUE object = ui_wrap_squash(spc);
   widget_object_map_add(spc, object);
   return object;
 }
@@ -242,11 +259,14 @@ void Init_ui() {
 
   init_ui_widget();
   init_ui_dialog();
-  init_ui_layout_box();
-  
-  init_ui_push_button();
+  init_ui_input_field();  
   init_ui_label();
-  init_ui_input_field();
+  init_ui_layout_box();
+  init_ui_push_button();
+  init_ui_spacing();
+  init_ui_squash();
+  init_ui_rich_text();
+  
 
   rb_define_singleton_method(mUI, "object_map", RUBY_METHOD_FUNC(object_map), 0);
 
@@ -269,6 +289,7 @@ void Init_ui() {
   rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);
   rb_define_singleton_method(mUIBuilder, "create_input_field", RUBY_METHOD_FUNC(create_input_field), 2);
+  rb_define_singleton_method(mUIBuilder, "create_rich_text", RUBY_METHOD_FUNC(create_rich_text), 2);
 }
 
 }
