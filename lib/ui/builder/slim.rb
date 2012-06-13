@@ -44,9 +44,9 @@ module UI
         def parse_attributes attrs
           attributes = attrs[2..-1].reduce({}) do |acc,el|
             if el[0] == :slim #slim attrs
-              acc[el[2]] = options[:context].instance_eval el[4];
+              acc[el[2].to_sym] = options[:context].instance_eval el[4];
             elsif el[0] == :html #match html attrs with static attr
-              acc[el[2]] = el[3][1];
+              acc[el[2].to_sym] = el[3][1];
             else
               raise "Unknown attribute #{el.inspect}"
             end
@@ -60,21 +60,20 @@ module UI
           pp attrs
           attributes = parse_attributes attrs
           pp attributes
-          id = attributes["id"]
           if UI::Builder::TOPLEVEL_ELEMENTS.include?(name_sym)
             obj = UI::Builder.send("create_#{name}".to_sym)
           elsif UI::Builder::LEAF_ELEMENTS.include?(name_sym)
             text = compile(body)
             pp text
-            id ||= text.gsub(/\s|[-_:.]/,"_")
+            attributes[:id] ||= text.gsub(/\s|[-_:.]/,"_")
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent, text)
           elsif UI::Builder::CONTAINER_ELEMENTS.include?(name_sym)
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent)
           else
             raise "Unknown element type #{name}"
           end
-          id ||= IdGenerator.generate name_sym
-          obj.id = id.to_sym
+          attributes[:id] ||= IdGenerator.generate name_sym
+          UI.initialize_widget(obj,attributes)
           @current_parent = obj
           compile(body)
           @current_parent = previous_parent
@@ -95,7 +94,7 @@ module UI
                             :partial => 'partial',
                             :context => nil
         def on_slim_output (*args)
-          ret = options[:contex].instance_eval args[1]
+          ret = options[:context].instance_eval(args[1])
           [:static,ret.to_s]
         end
 
@@ -165,9 +164,9 @@ module UI
         set_default_options :context => nil
         use ::Slim::Parser, :file, :tabsize, :encoding, :shortcut, :default_tag
         use ::Slim::Interpolation
-        use(:Evaluator) { Evaluator.new options[:context] }
-        use(:Cleaner) { Cleaner.new options[:context] }
-        use(:Compiler) { Compiler.new options[:context] }
+        use(:Evaluator) { Evaluator.new options }
+        use(:Cleaner) { Cleaner.new options }
+        use(:Compiler) { Compiler.new options }
         use Generator
       end
 
