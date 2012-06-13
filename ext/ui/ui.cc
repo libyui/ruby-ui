@@ -4,6 +4,7 @@
 
 #include <yui/YUI.h>
 #include <yui/YWidgetFactory.h>
+#include <yui/YApplication.h>
 #include <yui/YMacro.h>
 #include <yui/YMacroRecorder.h>
 
@@ -24,82 +25,69 @@
 
 VALUE mUI;
 
-#if 0
-static std::deque<VALUE> _fakeUserInputQueue;
+/*
+ * Document-module UI
+ */
 
+/*
+ * Open a directory selection box and prompt the user for an existing
+ * directory.
+ *
+ * @param [String] start_dir the initial directory that is displayed.
+ * @param [String] headline an explanatory text for the directory selection box.
+ *
+ * @returns the selected directory name
+ *   or an empty string if the user canceled the operation.
+ */
 static VALUE
-do_user_input(const char *builtin_name,
-              long timeout_millisec,
-              bool wait)
+ask_for_existing_directory(VALUE self, VALUE start_dir, VALUE headline)
 {
-  // Plausibility check for timeout
-
-  if ( timeout_millisec < 0 )
-  {
-    yuiError() << builtin_name << "(): Invalid value " << timeout_millisec
-      << " for timeout - assuming 0"
-      << endl;
-
-    timeout_millisec = 0;
-  }
-
-  YEvent *  event = 0;
-  VALUE input = Qnil;
-  
-  try {
-    YDialog * dialog = YDialog::currentDialog();
-    // Check for leftover postponed shortcut check
-
-    if ( dialog->shortcutCheckPostponed() ) {
-      yuiError() << "Missing UI::CheckShortcuts() before UI::" << builtin_name
-        << "() after UI::PostponeShortcutCheck()!"
-        << endl;
-
-      dialog->checkShortcuts( true );
-    }
-
-    // Handle events
-
-    if ( fakeUserInputQueue.empty() ) {
-      if (wait)
-        event = dialog->waitForEvent( timeout_millisec );
-      else
-        event = dialog->pollEvent();
-
-      if (event) {
-        input = convert_event(event);
-      }
-    }
-    else { // _fakeUserInputQueue contains elements -> use the first one
-      // Handle macro playing
-      input = _fakeUserInputQueue.front();
-      yuiDebug() << "Using event from fakeUserInputQueue: "<< input << endl;
-      _fakeUserInputQueue.pop_front();
-    }
-
-    // Handle macro recording
-
-    if ( YMacro::recording() ) {
-      YCPMacroRecorder * macroRecorder = dynamic_cast<YCPMacroRecorder *> ( YMacro::recorder() );
-
-      if ( macroRecorder ) {
-        if ( ! input->isVoid() || wait ) { // Don't record empty PollInput() calls
-          macroRecorder->beginBlock();
-          dialog->saveUserInput( macroRecorder );
-          macroRecorder->recordUserInput( input );
-          macroRecorder->endBlock();
-        }
-      }
-    }
-  }
-  catch ( YUIException & exception ) {
-    YUI_CAUGHT( exception );
-    rb_raise(rb_eRuntimeError, exception.msg().c_str());
-  }
-
-  return input;
+  string ret = YUI::app()->askForExistingDirectory(StringValueCStr(start_dir),
+                                                   StringValueCStr(headline));
+  return rb_str_new2(ret.c_str());
 }
-#endif
+
+/*
+ * Open a file selection box and prompt the user for an existing file.
+ *
+ * @param [String] start_with is the initial directory or file.
+ * @param [String] filter one or more blank-separated file patterns, e.g.
+ *   "*.png *.jpg"
+ * @param [String] headline' an explanatory text for the file selection box.
+ *
+ * @return [String] the selected file name
+ *   or an empty string if the user canceled the operation.
+ **/
+static VALUE
+ask_for_existing_file(VALUE self, VALUE start_with, VALUE filter, VALUE headline)
+{
+  string ret = YUI::app()->askForExistingFile(StringValueCStr(start_with),
+                                              StringValueCStr(filter),
+                                              StringValueCStr(headline));
+  return rb_str_new2(ret.c_str());
+}
+
+/*
+ * Open a file selection box and prompt the user for a file to save data
+ * to.  Automatically asks for confirmation if the user selects an existing
+ * file.
+ *
+ * @param [String] start_with is the initial directory or file.
+ * @param [String] filter one or more blank-separated file patterns, e.g.
+ *   "*.png *.jpg"
+ * @param [String] headline' an explanatory text for the file selection box.
+ *
+ * @return [String] the selected file name
+ *   or an empty string if the user canceled the operation.
+ **/
+static VALUE
+ask_for_save_file_name(VALUE self, VALUE start_with, VALUE filter, VALUE headline)
+{
+  string ret = YUI::app()->askForSaveFileName(StringValueCStr(start_with),
+                                              StringValueCStr(filter),
+                                              StringValueCStr(headline));
+  return rb_str_new2(ret.c_str());
+}
 
 extern VALUE widgetObjectMap;
 
@@ -121,7 +109,12 @@ void __attribute__ ((visibility("default"))) Init_ui() {
   widget_object_map_init();
 
   mUI = rb_define_module("UI");
-  
+
+  rb_define_singleton_method(mUI, "object_map", RUBY_METHOD_FUNC(object_map), 0);
+  rb_define_singleton_method(mUI, "ask_for_existing_directory", RUBY_METHOD_FUNC(ask_for_existing_directory), 2);
+  rb_define_singleton_method(mUI, "ask_for_existing_file", RUBY_METHOD_FUNC(ask_for_existing_file), 3);
+  rb_define_singleton_method(mUI, "ask_for_save_file_name", RUBY_METHOD_FUNC(ask_for_save_file_name), 3);
+
   init_ui_widget();
   init_ui_dialog();
   init_ui_input_field();  
