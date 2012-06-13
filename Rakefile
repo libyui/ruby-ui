@@ -9,8 +9,6 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-extra_docs = ['README*']
-
 require 'yard'
 YARD::Rake::YardocTask.new(:doc)
 
