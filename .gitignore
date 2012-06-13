@@ -6,4 +6,5 @@ tmp
 examples/playground.*
 lib/*.so
 *.log
-
+.yardoc
+doc

@@ -40,25 +40,28 @@ You can create a simple widget in ruby like this:
 
 Or you can use a Slim template:
 
-    require 'ui'
-    require 'ui/builder/slim'
+{include:file:examples/slim_template.rb}
 
-    template =<<EOF
-    main_dialog
-      vbox
-        push_button Ok
-        hbox
-          input_field Enter your name
-    EOF
+== Properties
 
-    dialog = UI.slim(template)
-    dialog.wait_for_event
+Ruby-UI support same set of properties as libyui. To query list of properties use method #Widget#properties. Properties can be also automatic set with slim Templates. It is needed to pass correct type. For boolean true or false. For Integer Fixnum or Bignum and for String String object.
+
+=== Properties example
+
+Properties via builder
+
+{include:file:examples/basic_properties.rb}
+
+Properties in Slim
+
+{include:file:examples/slim_properties.rb}
+
 
 == Events
 
 There is basically three ways how to handle events. It is possible to handle it in event loop,
 define callbacks on widgets or combination of both approach. Events are documented in
-UI::Event and its ancestor.
+#UI::Event and its ancestor.
 
 === Events Examples
 
