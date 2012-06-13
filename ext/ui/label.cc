@@ -2,9 +2,9 @@
 #include "label.h"
 
 static void
-dealloc(YLabel *btn)
+dealloc(YLabel *lbl)
 {
-  
+  widget_object_map_remove(lbl);
 }
 
 VALUE

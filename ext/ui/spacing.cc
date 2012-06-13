@@ -4,7 +4,7 @@
 static void
 dealloc(YSpacing *spc)
 {
-  
+  widget_object_map_remove(spc);
 }
 
 VALUE

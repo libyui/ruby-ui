@@ -4,7 +4,7 @@
 static void
 dealloc(YInputField *fld)
 {
-  
+  widget_object_map_remove(fld);
 }
 
 VALUE
