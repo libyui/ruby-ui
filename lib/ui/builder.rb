@@ -6,12 +6,16 @@ module UI
                           :hspacing, :vspacing, :hsquash, :vsquash, :hvsquash]
     LEAF_ELEMENTS = [:push_button, :input_field,:label, :rich_text]
 
+    ELEMENT_CALLBACKS = [:activated, :value_changed]
     # @visibility private
     def initialize_widget(el, opts)
       el.id = opts[:id] if opts[:id]
       properties = el.properties
       opts.each do |k,v|
         el[k] = v if properties.include? k
+        if ELEMENT_CALLBACKS.include? k
+          el.send(k,&v);
+        end
       end
     end
 

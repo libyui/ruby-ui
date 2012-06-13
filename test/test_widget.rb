@@ -64,4 +64,5 @@ class WidgetTest < Test::Unit::TestCase
     @dialog = UI.main_dialog(:id => "Test", :Enabled => false) {}
     assert !@dialog[:Enabled]
   end
+
 end

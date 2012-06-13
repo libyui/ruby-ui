@@ -1,6 +1,7 @@
 #include "widget.h"
 #include "dialog.h"
 #include "event.h"
+#include "callback_filter.h"
 
 /*
  * Document-class: UI::Dialog
@@ -76,7 +77,8 @@ is_open(VALUE self)
 static VALUE
 wait_for_event(VALUE self)
 {
-    YDialog *ptr = ui_unwrap_dialog(self);    
+    YDialog *ptr = ui_unwrap_dialog(self);
+    new CallbackFilter(ptr); //see filter documentation
     YEvent * ev = ptr->waitForEvent();
     return convert_event(ev);
 }

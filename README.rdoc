@@ -31,7 +31,7 @@ You can create a simple widget in ruby like this:
       vbox {
         label "Fill in this please"
         input_field "User Name:"
-        hbox {      
+        hbox {
           push_button "Ok"
           push_button "Cancel"
         }
@@ -48,11 +48,31 @@ Or you can use a Slim template:
       vbox
         push_button Ok
         hbox
-          input_field Enter your name    
+          input_field Enter your name
     EOF
 
     dialog = UI.slim(template)
     dialog.wait_for_event
+
+== Events
+
+There is basically three ways how to handle events. It is possible to handle it in event loop,
+define callbacks on widgets or combination of both approach. Events are documented in
+UI::Event and its ancestor.
+
+=== Events Examples
+
+simple example with event loop
+
+{include:file:examples/basic_event.rb}
+
+Example with event loop in block
+
+{include:file:examples/loop_event.rb}
+
+Example where handling of clear action is moved to callback
+
+{include:file:examples/callback_event.rb}
 
 == License
 

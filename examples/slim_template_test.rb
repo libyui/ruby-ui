@@ -8,8 +8,8 @@ main_dialog
     hbox
       input_field id="test2" Enter your name
       input_field id=15 Enter your name
-    push_button Ok
-    push_button clicked={ Proc.new { |widget| widget[:Label] = widget[:Label]+"!" }} Ok
+    push_button id=2 Ok
+    push_button id=1 activated={ Proc.new { |event,dialog| event.widget[:Label] = event.widget[:Label]+"!";false }} Ok
 EOF
 
 dialog = UI.slim(template)
