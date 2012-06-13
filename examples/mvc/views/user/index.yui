@@ -1,0 +1,7 @@
+main_dialog
+  vbox id=:main_box
+    vbox id=:users
+    hbox
+      push_button activated={Proc.new{ :cancel }} Cancel
+      push_button id=:save save
+      push_button id=:add Add User
