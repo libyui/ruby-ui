@@ -3,11 +3,7 @@ require "ui.so"
 require 'ui/builder'
 require 'ui/event'
 require 'ui/dialog'
+require 'ui/widget'
 
 module UI
-
-  class Widget
-    alias :find :find_widget
-  end
-  
 end
