@@ -1,10 +1,15 @@
 #include <stdio.h>
 
+#include <deque>
+
 #include <yui/YUI.h>
 #include <yui/YWidgetFactory.h>
+#include <yui/YMacro.h>
+#include <yui/YMacroRecorder.h>
 
 #include "widget_object_map.h"
 
+#include "event.h"
 #include "ui.h"
 #include "widget.h"
 #include "dialog.h"
@@ -235,9 +240,86 @@ static VALUE create_hvsquash(VALUE self, VALUE parent)
   return object;
 }
 
+#if 0
+static std::deque<VALUE> _fakeUserInputQueue;
+
+static VALUE
+do_user_input(const char *builtin_name,
+              long timeout_millisec,
+              bool wait)
+{
+  // Plausibility check for timeout
+
+  if ( timeout_millisec < 0 )
+  {
+    yuiError() << builtin_name << "(): Invalid value " << timeout_millisec
+      << " for timeout - assuming 0"
+      << endl;
+
+    timeout_millisec = 0;
+  }
+
+  YEvent *  event = 0;
+  VALUE input = Qnil;
+  
+  try {
+    YDialog * dialog = YDialog::currentDialog();
+    // Check for leftover postponed shortcut check
+
+    if ( dialog->shortcutCheckPostponed() ) {
+      yuiError() << "Missing UI::CheckShortcuts() before UI::" << builtin_name
+        << "() after UI::PostponeShortcutCheck()!"
+        << endl;
+
+      dialog->checkShortcuts( true );
+    }
+
+    // Handle events
+
+    if ( fakeUserInputQueue.empty() ) {
+      if (wait)
+        event = dialog->waitForEvent( timeout_millisec );
+      else
+        event = dialog->pollEvent();
+
+      if (event) {
+        input = convert_event(event);
+      }
+    }
+    else { // _fakeUserInputQueue contains elements -> use the first one
+      // Handle macro playing
+      input = _fakeUserInputQueue.front();
+      yuiDebug() << "Using event from fakeUserInputQueue: "<< input << endl;
+      _fakeUserInputQueue.pop_front();
+    }
+
+    // Handle macro recording
+
+    if ( YMacro::recording() ) {
+      YCPMacroRecorder * macroRecorder = dynamic_cast<YCPMacroRecorder *> ( YMacro::recorder() );
+
+      if ( macroRecorder ) {
+        if ( ! input->isVoid() || wait ) { // Don't record empty PollInput() calls
+          macroRecorder->beginBlock();
+          dialog->saveUserInput( macroRecorder );
+          macroRecorder->recordUserInput( input );
+          macroRecorder->endBlock();
+        }
+      }
+    }
+  }
+  catch ( YUIException & exception ) {
+    YUI_CAUGHT( exception );
+    rb_raise(rb_eRuntimeError, exception.msg().c_str());
+  }
+
+  return input;
+}
+#endif
+
 extern VALUE widgetObjectMap;
 
-/*
+/*  
  * @visibility private
  */
 static VALUE object_map(VALUE self)
@@ -247,7 +329,7 @@ static VALUE object_map(VALUE self)
 
 extern "C" {
 
-void Init_ui() {
+void __attribute__ ((visibility("default"))) Init_ui() {
 
   YUILog::enableDebugLogging();
 
