@@ -9,12 +9,8 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-extra_docs = ['README*']
-
 require 'yard'
-YARD::Rake::YardocTask.new(:doc) do |t|
-  t.files = ['ext/**/*.cc', 'lib/**/*.rb', *extra_docs]
-end
+YARD::Rake::YardocTask.new(:doc)
 
 task :default => [:compile]
 task :recompile => [:clobber,:compile]

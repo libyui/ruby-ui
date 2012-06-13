@@ -23,22 +23,6 @@
 #include "squash.h"
 #include "ui_builder.h"
 
-VALUE mUI;
-
-/*
- * Document-module UI
- */
-
-/*
- * Open a directory selection box and prompt the user for an existing
- * directory.
- *
- * @param [String] start_dir the initial directory that is displayed.
- * @param [String] headline an explanatory text for the directory selection box.
- *
- * @returns the selected directory name
- *   or an empty string if the user canceled the operation.
- */
 static VALUE
 ask_for_existing_directory(VALUE self, VALUE start_dir, VALUE headline)
 {
@@ -47,17 +31,6 @@ ask_for_existing_directory(VALUE self, VALUE start_dir, VALUE headline)
   return rb_str_new2(ret.c_str());
 }
 
-/*
- * Open a file selection box and prompt the user for an existing file.
- *
- * @param [String] start_with is the initial directory or file.
- * @param [String] filter one or more blank-separated file patterns, e.g.
- *   "*.png *.jpg"
- * @param [String] headline' an explanatory text for the file selection box.
- *
- * @return [String] the selected file name
- *   or an empty string if the user canceled the operation.
- **/
 static VALUE
 ask_for_existing_file(VALUE self, VALUE start_with, VALUE filter, VALUE headline)
 {
@@ -67,19 +40,6 @@ ask_for_existing_file(VALUE self, VALUE start_with, VALUE filter, VALUE headline
   return rb_str_new2(ret.c_str());
 }
 
-/*
- * Open a file selection box and prompt the user for a file to save data
- * to.  Automatically asks for confirmation if the user selects an existing
- * file.
- *
- * @param [String] start_with is the initial directory or file.
- * @param [String] filter one or more blank-separated file patterns, e.g.
- *   "*.png *.jpg"
- * @param [String] headline' an explanatory text for the file selection box.
- *
- * @return [String] the selected file name
- *   or an empty string if the user canceled the operation.
- **/
 static VALUE
 ask_for_save_file_name(VALUE self, VALUE start_with, VALUE filter, VALUE headline)
 {
@@ -87,6 +47,27 @@ ask_for_save_file_name(VALUE self, VALUE start_with, VALUE filter, VALUE headlin
                                               StringValueCStr(filter),
                                               StringValueCStr(headline));
   return rb_str_new2(ret.c_str());
+}
+
+static VALUE
+busy_cursor(VALUE self)
+{
+  YUI::app()->busyCursor();
+  return Qnil;
+}
+
+static VALUE
+normal_cursor(VALUE self)
+{
+  YUI::app()->normalCursor();
+  return Qnil;
+}
+
+static VALUE
+beep(VALUE self)
+{
+  YUI::app()->beep();
+  return Qnil;
 }
 
 extern VALUE widgetObjectMap;
@@ -99,21 +80,18 @@ static VALUE object_map(VALUE self)
   return widgetObjectMap;
 }
 
-extern "C" {
+VALUE mUI;
 
-void __attribute__ ((visibility("default"))) Init_ui() {
-
-  YUILog::enableDebugLogging();
-
-  /* this tracks C++ objects to ruby objects */
-  widget_object_map_init();
+void Init_ui() {
 
   mUI = rb_define_module("UI");
-
   rb_define_singleton_method(mUI, "object_map", RUBY_METHOD_FUNC(object_map), 0);
   rb_define_singleton_method(mUI, "ask_for_existing_directory", RUBY_METHOD_FUNC(ask_for_existing_directory), 2);
   rb_define_singleton_method(mUI, "ask_for_existing_file", RUBY_METHOD_FUNC(ask_for_existing_file), 3);
   rb_define_singleton_method(mUI, "ask_for_save_file_name", RUBY_METHOD_FUNC(ask_for_save_file_name), 3);
+  rb_define_singleton_method(mUI, "busy_cursor", RUBY_METHOD_FUNC(busy_cursor), 0);
+  rb_define_singleton_method(mUI, "normal_cursor", RUBY_METHOD_FUNC(normal_cursor), 0);
+  rb_define_singleton_method(mUI, "beep", RUBY_METHOD_FUNC(beep), 0);
 
   init_ui_widget();
   init_ui_dialog();
@@ -126,6 +104,8 @@ void __attribute__ ((visibility("default"))) Init_ui() {
   init_ui_rich_text();
   
   init_ui_ui_builder();
-}
 
+  YUILog::enableDebugLogging();
+  /* this tracks C++ objects to ruby objects */
+  widget_object_map_init();
 }

@@ -1,6 +1,6 @@
+--readme README.rdoc
 --embed-mixin UI::Builder
 -
 ext/**/*.cc
 lib/**/*.rb
-README.rdoc
 
