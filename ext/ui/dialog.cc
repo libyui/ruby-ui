@@ -95,6 +95,17 @@ resize(VALUE self)
   return Qnil;
 }
 
+/*
+ * Recalculate size of dialog. Useful after modification of childer.
+ */
+static VALUE
+resize(VALUE self)
+{    
+    YDialog *ptr = ui_unwrap_dialog(self);
+    ptr->recalcLayout();
+    return Qnil;
+}
+
 static VALUE
 wait_for_event(VALUE self)
 {
