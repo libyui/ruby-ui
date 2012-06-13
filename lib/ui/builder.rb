@@ -7,6 +7,7 @@ module UI
     LEAF_ELEMENTS = [:push_button, :input_field,:label, :rich_text]
 
     ELEMENT_CALLBACKS = [:activated, :value_changed]
+
     # @visibility private
     def initialize_widget(el, opts)
       el.id = opts[:id] if opts[:id]
@@ -19,6 +20,22 @@ module UI
       end
     end
 
+    # @!group Top level elements
+
+    # @!method main_dialog(&block)
+    #   @return [Dialog] a main dialog
+    #   @example
+    #     dlg = UI.main_dialog {
+    #       ...
+    #     }
+
+    # @!method popup_dialog(&block)
+    #   @return [Dialog] a popup dialog
+    #   @example
+    #     dlg = UI.popup_dialog {
+    #       ...
+    #     }
+
     TOPLEVEL_ELEMENTS.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
         def #{element}(opts={}, &block)
@@ -29,6 +46,37 @@ module UI
         end
       EOM
     end
+
+    # @!endgroup
+
+    # @!group Container elements
+
+    # @!method vbox(&block)
+    #   Creates a vertically alligned container
+    #   @return [LayoutBox]
+    #   @example
+    #     UI.main_dialog {
+    #       vbox {
+    #         push_button "Ok"
+    #       }
+    #     }
+
+    # @!method hbox(&block)
+    # Horizontally aligned container
+    # @see vbox
+    # @see LayoutBox
+
+    # @!method hstretch(&block)
+    # @!method vstretch(&block)
+    # @!method hspacing(&block)
+    # @!method vspacing(&block)
+    # @!method hsquash(&block)
+    # @!method vsquash(&block)
+    # @!method hvsquash(&block)
+
+    # @!endgroup
+
+
 
     CONTAINER_ELEMENTS.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
@@ -41,6 +89,24 @@ module UI
       EOM
     end
 
+    # @!group Elements
+
+    # @!method push_button(text, &block)
+    #   Creates a push button
+    #   @return [Button]
+    #   @example
+    #     UI.main_dialog {
+    #       vbox {
+    #         push_button "Ok"
+    #       }
+    #     }
+
+    # @!method input_field(&block)
+    # @!method rich_text(&block)
+    # @!method label(&block)
+
+    # @!endgroup
+
     LEAF_ELEMENTS.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
         def #{element}(text, opts={}, &block)
@@ -50,6 +116,7 @@ module UI
         end
       EOM
     end
+
   end
 
   extend Builder

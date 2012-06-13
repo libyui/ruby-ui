@@ -8,4 +8,6 @@
 
 #include "widget_object_map.h"
 
+extern "C" void __attribute__ ((visibility("default"))) Init_ui();
+
 #endif
