@@ -1,6 +1,15 @@
 module UI
   class Widget
+
+    alias_method :each, :each_child
     alias_method :find, :find_widget
+
+    include Enumerable
+
+    # @return [Array<Widget>] this widget children
+    def children
+      to_a
+    end
 
     # Defines callback when widget is activated ( e.g. clicked on button )
     # @yield [UI::Event,UI::Dialog] block that gets event when it occur and

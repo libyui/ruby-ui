@@ -4,7 +4,7 @@
 static void
 dealloc(YRichText *rich)
 {
-  
+  widget_object_map_remove(rich);
 }
 
 VALUE

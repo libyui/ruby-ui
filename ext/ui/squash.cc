@@ -4,7 +4,7 @@
 static void
 dealloc(YSquash *sq)
 {
-  
+  widget_object_map_remove(sq);
 }
 
 VALUE

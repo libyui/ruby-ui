@@ -4,7 +4,7 @@
 static void
 dealloc(YPushButton *btn)
 {
-  
+  widget_object_map_remove(btn);
 }
 
 VALUE

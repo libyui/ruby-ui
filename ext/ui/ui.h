@@ -6,4 +6,6 @@
 #define YUILogComponent "ruby-ui"
 #include <yui/YUILog.h>
 
+#include "widget_object_map.h"
+
 #endif

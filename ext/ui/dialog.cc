@@ -15,6 +15,7 @@ dealloc(YDialog *dlg)
   yuiDebug() << "destroy ruby object for dialog" << dlg << std::endl;
   if (dlg->isValid())
     dlg->destroy();
+  widget_object_map_remove(dlg);
 }
 
 VALUE

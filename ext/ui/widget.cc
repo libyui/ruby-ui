@@ -16,7 +16,7 @@
 static void
 dealloc(YWidget *wg)
 {
-  std::cout << "destroy widget" << std::endl;
+  // this is never called, only the base classes
 }
 
 VALUE

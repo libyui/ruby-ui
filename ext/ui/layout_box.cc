@@ -4,7 +4,7 @@
 static void
 dealloc(YLayoutBox *wg)
 {
-
+  widget_object_map_remove(wg);
 }
 
 VALUE
