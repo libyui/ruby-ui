@@ -61,7 +61,7 @@ static VALUE object_map(VALUE self)
 
 VALUE mUI;
 
-void Init_UI() {
+void Init_ui() {
 
   mUI = rb_define_module("UI");
   rb_define_singleton_method(mUI, "object_map", RUBY_METHOD_FUNC(object_map), 0);
