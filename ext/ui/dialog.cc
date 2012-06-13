@@ -76,8 +76,8 @@ is_open(VALUE self)
 static VALUE
 wait_for_event(VALUE self)
 {
-    YDialog *ptr = ui_unwrap_dialog(self);    
-    CallbackFilter filter(ptr);
+    YDialog *ptr = ui_unwrap_dialog(self);
+    new CallbackFilter(ptr); //see filter documentation
     YEvent * ev = ptr->waitForEvent();
     return convert_event(ev);
 }
