@@ -49,6 +49,27 @@ ask_for_save_file_name(VALUE self, VALUE start_with, VALUE filter, VALUE headlin
   return rb_str_new2(ret.c_str());
 }
 
+static VALUE
+busy_cursor(VALUE self)
+{
+  YUI::app()->busyCursor();
+  return Qnil;
+}
+
+static VALUE
+normal_cursor(VALUE self)
+{
+  YUI::app()->normalCursor();
+  return Qnil;
+}
+
+static VALUE
+beep(VALUE self)
+{
+  YUI::app()->beep();
+  return Qnil;
+}
+
 extern VALUE widgetObjectMap;
 
 /*  
@@ -68,6 +89,9 @@ void Init_ui() {
   rb_define_singleton_method(mUI, "ask_for_existing_directory", RUBY_METHOD_FUNC(ask_for_existing_directory), 2);
   rb_define_singleton_method(mUI, "ask_for_existing_file", RUBY_METHOD_FUNC(ask_for_existing_file), 3);
   rb_define_singleton_method(mUI, "ask_for_save_file_name", RUBY_METHOD_FUNC(ask_for_save_file_name), 3);
+  rb_define_singleton_method(mUI, "busy_cursor", RUBY_METHOD_FUNC(busy_cursor), 0);
+  rb_define_singleton_method(mUI, "normal_cursor", RUBY_METHOD_FUNC(normal_cursor), 0);
+  rb_define_singleton_method(mUI, "beep", RUBY_METHOD_FUNC(beep), 0);
 
   init_ui_widget();
   init_ui_dialog();

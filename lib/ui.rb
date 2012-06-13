@@ -53,4 +53,22 @@ module UI
   #   or an empty string if the user canceled the operation.
   #
 
+  #
+  # @!method self.busy_cursor
+  #
+  # Change the (mouse) cursor to indicate busy status.
+  #
+
+  #
+  # @!method self.normal_cursor
+  #
+  # Change the (mouse) cursor back from busy status to normal.
+  #
+
+  #
+  # @!method self.beep
+  #
+  # Beep!
+  #
+
 end
