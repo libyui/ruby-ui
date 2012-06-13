@@ -69,6 +69,7 @@ def show_users users
     if edit_user user
       users << user
       add_user_to_dialog user,dialog.find(:users)
+      dialog.resize
     end
     false
   end
