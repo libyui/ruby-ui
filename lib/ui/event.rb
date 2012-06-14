@@ -5,6 +5,22 @@ module UI
     def initialize(dialog)
       @dialog = dialog
     end
+
+    def widget?
+      self.is_a? WidgetEvent
+    end
+
+    def key?
+      self.is_a? KeyEvent
+    end
+
+    def cancel?
+      self.is_a? CancelEvent
+    end
+
+    def timeout?
+      self.is_a? TimeoutEvent
+    end
   end
 
   class WidgetEvent < Event
