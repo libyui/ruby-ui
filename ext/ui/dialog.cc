@@ -90,20 +90,11 @@ is_open(VALUE self)
 static VALUE
 resize(VALUE self)
 {
+  YEXCEPTION_TRY
   YDialog *ptr = ui_unwrap_dialog(self);
   ptr->recalcLayout();
   return Qnil;
-}
-
-/*
- * Recalculate size of dialog. Useful after modification of childer.
- */
-static VALUE
-resize(VALUE self)
-{    
-    YDialog *ptr = ui_unwrap_dialog(self);
-    ptr->recalcLayout();
-    return Qnil;
+  YEXCEPTION_CATCH
 }
 
 static VALUE
@@ -123,10 +114,10 @@ wait_for_event(VALUE self)
 static VALUE
 current_dialog(VALUE self)
 {
+  YEXCEPTION_TRY
   YDialog *dlg = YDialog::currentDialog(false);
-
   return widget_object_map_for(dlg);
-
+  YEXCEPTION_CATCH
 }
 
 VALUE cUIDialog;
