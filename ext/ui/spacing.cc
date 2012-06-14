@@ -10,7 +10,7 @@ dealloc(YSpacing *spc)
 VALUE
 ui_wrap_spacing(YSpacing *spc)
 {
-  return Data_Wrap_Struct(cUISpacing, NULL, dealloc, spc);
+  return Data_Wrap_Struct(cUISpacing, ui_widget_mark, dealloc, spc);
 }
 
 VALUE cUISpacing;

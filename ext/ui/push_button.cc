@@ -10,7 +10,7 @@ dealloc(YPushButton *btn)
 VALUE
 ui_wrap_push_button(YPushButton *btn)
 {
-  return Data_Wrap_Struct(cUIPushButton, NULL, dealloc, btn);
+  return Data_Wrap_Struct(cUIPushButton, ui_widget_mark, dealloc, btn);
 }
 
 VALUE cUIPushButton;

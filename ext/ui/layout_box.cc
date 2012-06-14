@@ -10,7 +10,7 @@ dealloc(YLayoutBox *wg)
 VALUE
 ui_wrap_layout_box(YLayoutBox *dlg)
 {
-  return Data_Wrap_Struct(cUILayoutBox, NULL, dealloc, dlg);
+  return Data_Wrap_Struct(cUILayoutBox, ui_widget_mark, dealloc, dlg);
 }
 
 VALUE cUILayoutBox;
