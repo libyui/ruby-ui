@@ -1,3 +1,5 @@
+require "ui/widget"
+
 module UI
 
   module Builder
@@ -6,7 +8,6 @@ module UI
                           :hspacing, :vspacing, :hsquash, :vsquash, :hvsquash]
     LEAF_ELEMENTS = [:push_button, :input_field,:label, :rich_text]
 
-    ELEMENT_CALLBACKS = [:activated, :value_changed]
 
     # @visibility private
     def initialize_widget(el, opts)
@@ -14,7 +15,7 @@ module UI
       properties = el.properties
       opts.each do |k,v|
         el[k] = v if properties.include? k
-        if ELEMENT_CALLBACKS.include? k
+        if UI::Widget::CALLBACKS.include? k
           el.send(k,&v);
         end
       end
