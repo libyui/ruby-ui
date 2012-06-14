@@ -21,16 +21,10 @@ dealloc(YDialog *dlg)
   
 }
 
-static void
-mark(YDialog *dlg)
-{
-  ui_widget_mark(dlg);
-}
-
 VALUE
 ui_wrap_dialog(YDialog *dlg)
 {
-  return Data_Wrap_Struct(cUIDialog, mark, dealloc, dlg);
+  return Data_Wrap_Struct(cUIDialog, ui_widget_mark, dealloc, dlg);
 }
 
 YDialog *

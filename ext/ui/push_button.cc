@@ -7,16 +7,10 @@ dealloc(YPushButton *btn)
   widget_object_map_remove(btn);
 }
 
-static void
-mark(YPushButton *btn)
-{
-  ui_widget_mark(btn);
-}
-
 VALUE
 ui_wrap_push_button(YPushButton *btn)
 {
-  return Data_Wrap_Struct(cUIPushButton, mark, dealloc, btn);
+  return Data_Wrap_Struct(cUIPushButton, ui_widget_mark, dealloc, btn);
 }
 
 VALUE cUIPushButton;

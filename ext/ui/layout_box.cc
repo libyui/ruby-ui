@@ -7,16 +7,10 @@ dealloc(YLayoutBox *wg)
   widget_object_map_remove(wg);
 }
 
-static void
-mark(YLayoutBox *box)
-{
-  ui_widget_mark(box);
-}
-
 VALUE
 ui_wrap_layout_box(YLayoutBox *dlg)
 {
-  return Data_Wrap_Struct(cUILayoutBox, mark, dealloc, dlg);
+  return Data_Wrap_Struct(cUILayoutBox, ui_widget_mark, dealloc, dlg);
 }
 
 VALUE cUILayoutBox;
