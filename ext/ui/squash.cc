@@ -10,7 +10,7 @@ dealloc(YSquash *sq)
 VALUE
 ui_wrap_squash(YSquash *sq)
 {
-  return Data_Wrap_Struct(cUISquash, NULL, dealloc, sq);
+  return Data_Wrap_Struct(cUISquash, ui_widget_mark, dealloc, sq);
 }
 
 VALUE cUISquash;

@@ -10,7 +10,7 @@ dealloc(YLabel *lbl)
 VALUE
 ui_wrap_label(YLabel *lbl)
 {
-  return Data_Wrap_Struct(cUILabel, NULL, dealloc, lbl);
+  return Data_Wrap_Struct(cUILabel, ui_widget_mark, dealloc, lbl);
 }
 
 VALUE cUILabel;

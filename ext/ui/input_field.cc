@@ -10,7 +10,7 @@ dealloc(YInputField *fld)
 VALUE
 ui_wrap_input_field(YInputField *fld)
 {
-  return Data_Wrap_Struct(cUIInputField, NULL, dealloc, fld);
+  return Data_Wrap_Struct(cUIInputField, ui_widget_mark, dealloc, fld);
 }
 
 VALUE cUIInputField;

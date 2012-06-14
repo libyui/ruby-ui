@@ -10,7 +10,7 @@ dealloc(YRichText *rich)
 VALUE
 ui_wrap_rich_text(YRichText *rich)
 {
-  return Data_Wrap_Struct(cUIRichText, NULL, dealloc, rich);
+  return Data_Wrap_Struct(cUIRichText, ui_widget_mark, dealloc, rich);
 }
 
 VALUE cUIRichText;
