@@ -41,6 +41,8 @@ ui_widget_dealloc(YWidget *wg)
 void
 ui_widget_mark(YWidget *wg)
 {
+  if (!wg)
+    return;
   // mark the id
   RubyValueWidgetID *id = dynamic_cast<RubyValueWidgetID *>(wg->id());
   if (id) {

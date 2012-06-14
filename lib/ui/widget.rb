@@ -12,7 +12,6 @@ module UI
     end
 
     CALLBACKS = [:activated, :value_changed, :clicked]
-    alias_method :clicked, :activated
     # Defines callback when widget is activated ( e.g. clicked on button )
     # @yield [UI::Event,UI::Dialog] block that gets event when it occur and
     #     dialog where it happen
@@ -22,6 +21,7 @@ module UI
     def activated(&block)
       @activated = block_given? ? block : nil
     end
+    alias_method :clicked, :activated
 
     # Fires event handler
     def activated_fire (event, dialog)

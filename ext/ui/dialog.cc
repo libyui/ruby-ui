@@ -78,6 +78,17 @@ is_open(VALUE self)
     return ptr->isOpen() ? Qtrue : Qfalse;
 }
 
+/*
+ * Recalculate size of dialog. Useful after modification of childer.
+ */
+static VALUE
+resize(VALUE self)
+{    
+    YDialog *ptr = ui_unwrap_dialog(self);
+    ptr->recalcLayout();
+    return Qnil;
+}
+
 static VALUE
 wait_for_event(VALUE self)
 {
@@ -99,6 +110,7 @@ void init_ui_dialog()
   rb_define_method(klass, "destroy!", RUBY_METHOD_FUNC(destroy), 0);
   rb_define_method(klass, "open", RUBY_METHOD_FUNC(_open), 0);
   rb_define_method(klass, "open?", RUBY_METHOD_FUNC(is_open), 0);
+  rb_define_method(klass, "resize", RUBY_METHOD_FUNC(resize), 0);
 
 }
 

@@ -1,0 +1,3 @@
+hbox
+  label Surname: #{surname}
+  push_button id=self Edit

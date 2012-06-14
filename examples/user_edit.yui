@@ -1,0 +1,15 @@
+popup_dialog
+  vbox
+    hbox
+      input_field id=:first_name Value=first_name First name:
+      input_field id=:surname Value=surname Surname:
+    hbox
+      input_field id=:beer Value=beer Prefferd Bear:
+      input_field id=:hair Value=hair Hair color:
+    hbox
+      input_field id=:skill Value=skill Main skill:
+    hbox
+      push_button id=:cancel activated={ Proc.new { :cancel }} Cancel
+      push_button id=:clear Clear
+      push_button id=:ok Ok
+

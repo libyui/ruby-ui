@@ -55,6 +55,8 @@ module UI
         end
 
         def on_slim_tag(name, attrs, body)
+          #support partials. Partials just need to pass in options :parent
+          @current_parent = options[:parent] unless @current_parent
           previous_parent = @current_parent
           name_sym = name.to_sym
           pp attrs
