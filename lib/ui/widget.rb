@@ -20,7 +20,7 @@ module UI
     #     nil represents stopping of event, :cancel generate CancelEvent instead
     #     and :continue pass event further
     def activated(&block)
-      @activated = block
+      @activated = block_given? ? block : nil
     end
 
     # Fires event handler
@@ -36,7 +36,7 @@ module UI
     #     nil represents stopping of event, :cancel generate CancelEvent instead
     #     and :continue pass event further
     def value_change(&block)
-      @value_change = block
+      @value_changed = block_given? ? block : nil
     end
 
     # Fires event handler
