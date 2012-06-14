@@ -23,8 +23,8 @@ public:
     {
         RubyValueWidgetID *that = dynamic_cast<RubyValueWidgetID *>(otherID);
         if (that) {
+	    // rb_eql not implemented in jruby
             return rb_funcall(this->rubyValue(), rb_intern("eql?"), 1, that->rubyValue());
-            //return rb_eql(this->rubyValue(), that->rubyValue());
         }
         return false;
     }
