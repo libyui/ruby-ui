@@ -7,10 +7,16 @@ dealloc(YLabel *lbl)
   widget_object_map_remove(lbl);
 }
 
+static void
+mark(YLabel *lbl)
+{
+  ui_widget_mark(lbl);
+}
+
 VALUE
 ui_wrap_label(YLabel *lbl)
 {
-  return Data_Wrap_Struct(cUILabel, NULL, dealloc, lbl);
+  return Data_Wrap_Struct(cUILabel, mark, dealloc, lbl);
 }
 
 VALUE cUILabel;

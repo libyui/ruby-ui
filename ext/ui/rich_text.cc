@@ -7,10 +7,16 @@ dealloc(YRichText *rich)
   widget_object_map_remove(rich);
 }
 
+static void
+mark(YRichText *rich)
+{
+  ui_widget_mark(rich);
+}
+
 VALUE
 ui_wrap_rich_text(YRichText *rich)
 {
-  return Data_Wrap_Struct(cUIRichText, NULL, dealloc, rich);
+  return Data_Wrap_Struct(cUIRichText, mark, dealloc, rich);
 }
 
 VALUE cUIRichText;

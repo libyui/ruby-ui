@@ -13,15 +13,24 @@ static void
 dealloc(YDialog *dlg)
 {
   yuiDebug() << "destroy ruby object for dialog" << dlg << std::endl;
+
+  ui_widget_dealloc(dlg);
+
   if (dlg->isValid())
     dlg->destroy();
-  widget_object_map_remove(dlg);
+  
+}
+
+static void
+mark(YDialog *dlg)
+{
+  ui_widget_mark(dlg);
 }
 
 VALUE
 ui_wrap_dialog(YDialog *dlg)
 {
-  return Data_Wrap_Struct(cUIDialog, NULL, dealloc, dlg);
+  return Data_Wrap_Struct(cUIDialog, mark, dealloc, dlg);
 }
 
 YDialog *
@@ -38,7 +47,8 @@ static VALUE
 destroy(VALUE self)
 {    
     YDialog *ptr = ui_unwrap_dialog(self);
-    ptr->destroy();
+    dealloc(ptr);
+    //ptr->destroy();
 
     // Now the underlaying object is deleted (ptr) but
     // the ruby object still exists, make it invalid

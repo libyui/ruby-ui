@@ -13,25 +13,65 @@
  * @see UI
  */
 
-static void
-dealloc(YWidget *wg)
+void
+ui_widget_dealloc(YWidget *wg)
 {
-  // this is never called, only the base classes
+  // invalidate all children
+  for (YWidgetListConstIterator it = wg->childrenBegin();
+       it != wg->childrenEnd();
+       ++it) {
+
+    YWidget *child = *it;
+    if (!child) continue;
+
+    VALUE rb_child = widget_object_map_for(child);
+    if (NIL_P(rb_child)) continue;
+
+    // and recursivelly all children
+    ui_widget_dealloc(child);
+
+    // Invalidate our own data
+    if (!NIL_P(rb_child))
+      DATA_PTR(rb_child) = 0;    
+  }
+  //remove it from the map
+  widget_object_map_remove(wg);
+}
+
+void
+ui_widget_mark(YWidget *wg)
+{
+  // mark the id
+  RubyValueWidgetID *id = dynamic_cast<RubyValueWidgetID *>(wg->id());
+  if (id) {
+    rb_gc_mark(id->rubyValue());
+  }
+
+  // mark our child _ruby_ objects by finding the C
+  // ptrs and looking the ruby counterparts in the hash
+  for (YWidgetListConstIterator it = wg->childrenBegin();
+       it != wg->childrenEnd();
+       ++it) {
+    YWidget *child = *it;
+    VALUE rb_child = widget_object_map_for(child);
+    if (rb_child != Qnil)
+      rb_gc_mark(rb_child);
+  }
 }
 
 VALUE
-ui_wrap_widget(YWidget *dlg)
+ui_wrap_widget(YWidget *wg)
 {
-  return Data_Wrap_Struct(cUIWidget, NULL, dealloc, dlg);
+  return Data_Wrap_Struct(cUIWidget, ui_widget_mark, ui_widget_dealloc, wg);
 }
 
-static YWidget *
+YWidget *
 ui_unwrap_widget(VALUE wdg)
 {
   YWidget *ptr = 0L;
   Data_Get_Struct (wdg, YWidget, ptr);
   if (!ptr) 
-    rb_raise(rb_eRuntimeError, "Widget was already destroyed!");
+    rb_raise(rb_eRuntimeError, "Widget was already destroyed. Probably you destroyed its parent dialog.");
   return ptr;
 }
 
@@ -49,7 +89,6 @@ each_child(VALUE self)
          ++it) {
       YWidget *ptr = *it;
       rb_yield(widget_object_map_for(ptr));
-      //std::cout << *it << std::endl;
     }
     return Qnil;
 }

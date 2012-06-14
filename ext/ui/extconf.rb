@@ -2,7 +2,7 @@ require 'mkmf'
 RbConfig::MAKEFILE_CONFIG['CC'] = ENV['CC'] if ENV['CC']
 RbConfig::MAKEFILE_CONFIG['CXX'] = ENV['CXX'] if ENV['CXX']
 
-$CFLAGS = "-fvisibility=hidden #{$CFLAGS} -I/usr/include/YaST2 -I/usr/include/YaST2/yui"
+$CFLAGS = "-g -fvisibility=hidden #{$CFLAGS} -I/usr/include/YaST2 -I/usr/include/YaST2/yui"
 
 unless have_library('yui')
   STDERR.puts "Cannot find libyui"

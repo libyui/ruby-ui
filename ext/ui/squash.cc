@@ -7,10 +7,16 @@ dealloc(YSquash *sq)
   widget_object_map_remove(sq);
 }
 
+static void
+mark(YSquash *sq)
+{
+  ui_widget_mark(sq);
+}
+
 VALUE
 ui_wrap_squash(YSquash *sq)
 {
-  return Data_Wrap_Struct(cUISquash, NULL, dealloc, sq);
+  return Data_Wrap_Struct(cUISquash, mark, dealloc, sq);
 }
 
 VALUE cUISquash;

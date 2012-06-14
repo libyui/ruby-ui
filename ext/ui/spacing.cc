@@ -7,10 +7,16 @@ dealloc(YSpacing *spc)
   widget_object_map_remove(spc);
 }
 
+static void
+mark(YSpacing *spc)
+{
+  ui_widget_mark(spc);
+}
+
 VALUE
 ui_wrap_spacing(YSpacing *spc)
 {
-  return Data_Wrap_Struct(cUISpacing, NULL, dealloc, spc);
+  return Data_Wrap_Struct(cUISpacing, mark, dealloc, spc);
 }
 
 VALUE cUISpacing;
