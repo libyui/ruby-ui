@@ -54,7 +54,7 @@ ui_widget_mark(YWidget *wg)
        ++it) {
     YWidget *child = *it;
     VALUE rb_child = widget_object_map_for(child);
-    if (rb_child != Qnil)
+    if (!NIL_P(rb_child))
       rb_gc_mark(rb_child);
   }
 }
