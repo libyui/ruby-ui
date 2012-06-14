@@ -11,6 +11,7 @@ module UI
       to_a
     end
 
+    CALLBACKS = [:activated, :value_changed]
     # Defines callback when widget is activated ( e.g. clicked on button )
     # @yield [UI::Event,UI::Dialog] block that gets event when it occur and
     #     dialog where it happen
