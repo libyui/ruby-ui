@@ -262,7 +262,7 @@ set_property(VALUE self, VALUE id, VALUE value)
         break;
     }
     bool response = ptr->setProperty(StringValueCStr(id_str),yui_value);
-    return response ? Qtrue : Qfalse;
+    return value;
     YEXCEPTION_CATCH
 }
 
