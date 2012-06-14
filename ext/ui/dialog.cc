@@ -57,7 +57,7 @@ destroy(VALUE self)
  *
  */
 static VALUE
-open(VALUE self)
+_open(VALUE self)
 {    
     YDialog *ptr = ui_unwrap_dialog(self);
     ptr->open();
@@ -93,7 +93,7 @@ void init_ui_dialog()
 
   rb_define_method(klass, "wait_for_event", RUBY_METHOD_FUNC(wait_for_event), 0);
   rb_define_method(klass, "destroy!", RUBY_METHOD_FUNC(destroy), 0);
-  rb_define_method(klass, "open", RUBY_METHOD_FUNC(open), 0);
+  rb_define_method(klass, "open", RUBY_METHOD_FUNC(_open), 0);
   rb_define_method(klass, "open?", RUBY_METHOD_FUNC(is_open), 0);
 
 }
