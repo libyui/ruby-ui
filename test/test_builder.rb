@@ -32,5 +32,13 @@ class BuilderTest < Test::Unit::TestCase
 
   end
 
+  def test_exception_handling
+    assert_raise(RuntimeError) {
+      UI.main_dialog {
+        push_button 'OK', :Enabled => false
+        push_button 'OK', :Enabled => false
+      }
+    }
+  end
 
 end
