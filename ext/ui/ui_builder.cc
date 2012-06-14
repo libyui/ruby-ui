@@ -8,6 +8,7 @@
 #include "widget_object_map.h"
 
 #include "event.h"
+#include "exception_guard.h"
 #include "ui.h"
 #include "widget.h"
 #include "dialog.h"
@@ -26,8 +27,10 @@ VALUE mUIBuilder;
  */
 static VALUE create_main_dialog(VALUE self)
 {
+  YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createMainDialog();
   return ui_wrap_dialog(dlg);
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -35,11 +38,12 @@ static VALUE create_main_dialog(VALUE self)
  */
 static VALUE create_popup_dialog(VALUE self)
 {
+  YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createPopupDialog();
-  
   VALUE object = ui_wrap_dialog(dlg);
   widget_object_map_add(dlg, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -47,6 +51,7 @@ static VALUE create_popup_dialog(VALUE self)
  */
 static VALUE create_vbox(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -55,6 +60,7 @@ static VALUE create_vbox(VALUE self, VALUE parent)
   VALUE object = ui_wrap_layout_box(box);
   widget_object_map_add(box, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -62,6 +68,7 @@ static VALUE create_vbox(VALUE self, VALUE parent)
  */
 static VALUE create_hbox(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -70,6 +77,7 @@ static VALUE create_hbox(VALUE self, VALUE parent)
   VALUE object = ui_wrap_layout_box(box);
   widget_object_map_add(box, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -77,6 +85,7 @@ static VALUE create_hbox(VALUE self, VALUE parent)
  */
 static VALUE create_push_button(VALUE self, VALUE parent, VALUE text)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -85,6 +94,7 @@ static VALUE create_push_button(VALUE self, VALUE parent, VALUE text)
   VALUE object = ui_wrap_push_button(btn);
   widget_object_map_add(btn, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -92,6 +102,7 @@ static VALUE create_push_button(VALUE self, VALUE parent, VALUE text)
  */
 static VALUE create_label(VALUE self, VALUE parent, VALUE text)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -100,6 +111,7 @@ static VALUE create_label(VALUE self, VALUE parent, VALUE text)
   VALUE object = ui_wrap_label(lbl);
   widget_object_map_add(lbl, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -107,6 +119,7 @@ static VALUE create_label(VALUE self, VALUE parent, VALUE text)
  */
 static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -115,6 +128,7 @@ static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
   VALUE object = ui_wrap_input_field(fld);
   widget_object_map_add(fld, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -122,6 +136,7 @@ static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
  */
 static VALUE create_rich_text(VALUE self, VALUE parent, VALUE text)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -130,6 +145,7 @@ static VALUE create_rich_text(VALUE self, VALUE parent, VALUE text)
   VALUE object = ui_wrap_rich_text(rich);
   widget_object_map_add(rich, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -137,6 +153,7 @@ static VALUE create_rich_text(VALUE self, VALUE parent, VALUE text)
  */
 static VALUE create_hstretch(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -145,6 +162,7 @@ static VALUE create_hstretch(VALUE self, VALUE parent)
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -152,6 +170,7 @@ static VALUE create_hstretch(VALUE self, VALUE parent)
  */
 static VALUE create_vstretch(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -160,6 +179,7 @@ static VALUE create_vstretch(VALUE self, VALUE parent)
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -167,6 +187,7 @@ static VALUE create_vstretch(VALUE self, VALUE parent)
  */
 static VALUE create_vspacing(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -175,6 +196,7 @@ static VALUE create_vspacing(VALUE self, VALUE parent)
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -182,6 +204,7 @@ static VALUE create_vspacing(VALUE self, VALUE parent)
  */
 static VALUE create_hspacing(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -190,6 +213,7 @@ static VALUE create_hspacing(VALUE self, VALUE parent)
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -197,6 +221,7 @@ static VALUE create_hspacing(VALUE self, VALUE parent)
  */
 static VALUE create_hsquash(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -205,6 +230,7 @@ static VALUE create_hsquash(VALUE self, VALUE parent)
   VALUE object = ui_wrap_squash(spc);
   widget_object_map_add(spc, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -212,6 +238,7 @@ static VALUE create_hsquash(VALUE self, VALUE parent)
  */
 static VALUE create_vsquash(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -220,6 +247,7 @@ static VALUE create_vsquash(VALUE self, VALUE parent)
   VALUE object = ui_wrap_squash(spc);
   widget_object_map_add(spc, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -227,6 +255,7 @@ static VALUE create_vsquash(VALUE self, VALUE parent)
  */
 static VALUE create_hvsquash(VALUE self, VALUE parent)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = NULL;
   Data_Get_Struct(parent, YWidget, ptr);
 
@@ -235,6 +264,7 @@ static VALUE create_hvsquash(VALUE self, VALUE parent)
   VALUE object = ui_wrap_squash(spc);
   widget_object_map_add(spc, object);
   return object;
+  YEXCEPTION_CATCH
 }
 
 void init_ui_ui_builder() {
