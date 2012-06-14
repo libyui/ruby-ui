@@ -1,3 +1,4 @@
+require 'yaml'
 require 'ui'
 require 'ui/builder/slim'
 require File.expand_path("../../models/user.rb",__FILE__)
@@ -7,12 +8,14 @@ class UserController
   INDEX_TEMPLATE = File.read(File.join(VIEWS_DIR,"index.yui"))
   USER_PARTIAL = File.read(File.join(VIEWS_DIR,"_user_overview.yui"))
 
+  def clear event,dialog
+    User::ATTRS.each { |a| dialog.find(a)[:Value] = "" }
+    false
+  end
+
   def edit user
     dialog = UI.slim(EDIT_TEMPLATE,:context => user)
-    dialog.find(:clear).activated do |event,dialog|
-      User::ATTRS.each { |a| dialog.find(a)[:Value] = "" }
-      false
-    end
+    dialog.find(:clear).activated &method(:clear)
     response = false
     dialog.wait_for_event do |event|
       if event.is_a?(UI::CancelEvent)
@@ -26,39 +29,54 @@ class UserController
       end
     end
     dialog.destroy!
-    GC.start
     response
   end
 
   def render_user_partial user,parent
     box = UI.slim(USER_PARTIAL,:context => user,:parent => parent)
     button = box.detect {|e| e.is_a? UI::PushButton }
-    button.activated do |widget,dialog|
-      user = widget.id
-      if edit_user user
+    label = box.detect {|e| e.is_a? UI::Label }
+    button.activated do |event,dialog|
+      user = event.widget.id
+      if edit user
         label[:Value] = "Surname: "+user.surname
       end
       false
     end
   end
 
+  def saveload event,dialog
+    if @users.empty? #loading
+      path = UI.ask_for_existing_file Dir.pwd,"*.yaml *","Target file to load users"
+      return if path.empty?
+      @users = YAML.load File.read path
+      @users.each { |u| render_user_partial u,dialog.find(:users)}
+      event.widget[:Label] = "Save"
+      dialog.resize
+    else
+      path = UI.ask_for_save_file_name Dir.pwd,"*.yaml *","File to store users list"
+      return if path.empty?
+      File.open(path,"w") { |f| f.write @users.to_yaml }
+    end
+    false
+  end
+
+  def add_user event, dialog
+    user = User.new
+    if edit user
+      @users << user
+      render_user_partial user,dialog.find(:users)
+      dialog.find(:saveload)[:Label] = "Save"
+      dialog.resize
+    end
+    false
+  end
+
   def index users
+    @users = users
     dialog = UI.slim(INDEX_TEMPLATE)
-    dialog.find(:save).activated do |event,dialog|
-      path = UI.ask_for_existing_file Dir.pwd,"target File"
-      puts users.to_json
-      false
-    end
-    dialog.find(:add).activated do |event,dialog|
-      user = User.new
-      if edit user
-        users << user
-        render_user_partial user,dialog.find(:users)
-        dialog.resize
-      end
-      false
-    end
-    users.each { |u| render_user_partial u,dialog.find(:users)}
+    dialog.find(:saveload).activated &method(:saveload)
+    dialog.find(:add).activated &method(:add_user)
     dialog.wait_for_event
   end
 end
