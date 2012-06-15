@@ -11,6 +11,7 @@
 #include "widget_object_map.h"
 
 #include "event.h"
+#include "exception_guard.h"
 #include "ui.h"
 #include "widget.h"
 #include "dialog.h"
@@ -27,47 +28,59 @@
 static VALUE
 ask_for_existing_directory(VALUE self, VALUE start_dir, VALUE headline)
 {
+  YEXCEPTION_TRY
   string ret = YUI::app()->askForExistingDirectory(StringValueCStr(start_dir),
                                                    StringValueCStr(headline));
   return rb_str_new2(ret.c_str());
+  YEXCEPTION_CATCH
 }
 
 static VALUE
 ask_for_existing_file(VALUE self, VALUE start_with, VALUE filter, VALUE headline)
 {
+  YEXCEPTION_TRY
   string ret = YUI::app()->askForExistingFile(StringValueCStr(start_with),
                                               StringValueCStr(filter),
                                               StringValueCStr(headline));
   return rb_str_new2(ret.c_str());
+  YEXCEPTION_CATCH
 }
 
 static VALUE
 ask_for_save_file_name(VALUE self, VALUE start_with, VALUE filter, VALUE headline)
 {
+  YEXCEPTION_TRY
   string ret = YUI::app()->askForSaveFileName(StringValueCStr(start_with),
                                               StringValueCStr(filter),
                                               StringValueCStr(headline));
   return rb_str_new2(ret.c_str());
+  YEXCEPTION_CATCH
 }
 
 static VALUE
 busy_cursor(VALUE self)
 {
+  YEXCEPTION_TRY
   YUI::app()->busyCursor();
+  YEXCEPTION_CATCH
   return Qnil;
 }
 
 static VALUE
 normal_cursor(VALUE self)
 {
+  YEXCEPTION_TRY
   YUI::app()->normalCursor();
+  YEXCEPTION_CATCH
   return Qnil;
 }
 
 static VALUE
 beep(VALUE self)
 {
+  YEXCEPTION_TRY
   YUI::app()->beep();
+  YEXCEPTION_CATCH
   return Qnil;
 }
 

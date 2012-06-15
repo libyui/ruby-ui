@@ -32,14 +32,14 @@ VALUE widget_object_map_for(const void* ptr) {
     return rb_hash_aref(widgetObjectMap, key);
 }
 
-void widget_object_map_remove(const void* ptr) {    
+void widget_object_map_remove(const void* ptr) {
     VALUE key = widget_object_map_ptr_to_ref(ptr);
     VALUE object = widget_object_map_for(ptr);
 
     if (object != Qnil) {
         DATA_PTR(object) = 0;
     }
-        
+
     static VALUE delete_function = rb_intern("delete");
     rb_funcall(widgetObjectMap, delete_function, 1, key);
 }
