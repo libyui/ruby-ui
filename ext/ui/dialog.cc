@@ -97,14 +97,33 @@ resize(VALUE self)
   YEXCEPTION_CATCH
 }
 
+/*
+ * Extend wait_for_event with ability to process event in block.
+ * @yield [event] pass raised event to block
+ * @yield_param [UI::Event] event that occur
+ * @yield_return [true,false] response if dialog should continue in waiting
+ *   for another event
+ *   @example change button label
+ *     dialog.wait_for_event do |event|
+ *       break unless event.is_a? UI::WidgetEvent
+ *       event.widget[:Label] = "Already pressed"
+ *       true
+ *     end
+ */
 static VALUE
 wait_for_event(VALUE self)
 {
   YEXCEPTION_TRY
+
   YDialog *ptr = ui_unwrap_dialog(self);
   new CallbackFilter(ptr); //see filter documentation
-  YEvent * ev = ptr->waitForEvent();
-  return convert_event(ev);
+  YEvent *ev = 0L;
+  do {
+    ev = ptr->waitForEvent();
+    if (!rb_block_given_p())
+      return convert_event(ev);
+  } while (rb_yield(convert_event(ev)) != Qfalse);
+
   YEXCEPTION_CATCH
 }
 
