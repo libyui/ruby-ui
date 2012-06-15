@@ -1,6 +1,7 @@
 #include <yui/YWidgetID.h>
 #include <yui/YProperty.h>
 
+#include "exception_guard.h"
 #include "widget.h"
 #include "widget_object_map.h"
 #include "ruby_value_widget_id.h"
@@ -84,8 +85,9 @@ ui_unwrap_widget(VALUE wdg)
 VALUE
 each_child(VALUE self)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
-    
+
     for (YWidgetListConstIterator it = ptr->childrenBegin();
          it != ptr->childrenEnd();
          ++it) {
@@ -93,6 +95,7 @@ each_child(VALUE self)
       rb_yield(widget_object_map_for(ptr));
     }
     return Qnil;
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -101,8 +104,10 @@ each_child(VALUE self)
 VALUE
 children_count(VALUE self)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     return INT2NUM(ptr->childrenCount());
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -111,9 +116,11 @@ children_count(VALUE self)
 VALUE
 id(VALUE self)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     RubyValueWidgetID *id = dynamic_cast<RubyValueWidgetID *>(ptr->id());
     return id ? id->rubyValue() : Qnil;
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -124,9 +131,11 @@ id(VALUE self)
 VALUE
 set_id(VALUE self, VALUE id)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     ptr->setId(new RubyValueWidgetID(id));
     return id;
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -135,8 +144,10 @@ set_id(VALUE self, VALUE id)
 VALUE
 has_id(VALUE self)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     return ptr->hasId() ? Qtrue : Qfalse;
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -145,8 +156,10 @@ has_id(VALUE self)
 VALUE
 is_valid(VALUE self)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     return ptr->isValid() ? Qtrue : Qfalse;
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -159,16 +172,19 @@ is_valid(VALUE self)
 VALUE
 find_widget(VALUE self, VALUE id)
 {
+  YEXCEPTION_TRY
   YWidget *ptr = ui_unwrap_widget(self);
   YWidgetID *idPtr = new RubyValueWidgetID(id);
   YWidget * retPtr = ptr->findWidget(idPtr, false);
   //yuiDebug() << "ptr: " << (unsigned long)  retPtr << std::endl;
   delete idPtr;
   return retPtr ? widget_object_map_for(retPtr) : Qnil;
+  YEXCEPTION_CATCH
 }
 
 VALUE get_properties(VALUE self)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     const YPropertySet & prop_set = ptr->propertySet();
     VALUE result = rb_ary_new2(prop_set.size());
@@ -179,6 +195,7 @@ VALUE get_properties(VALUE self)
       result = rb_ary_push(result,name);
     }
     return result;
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -194,6 +211,7 @@ VALUE get_properties(VALUE self)
 VALUE
 get_property(VALUE self, VALUE id)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     VALUE id_str = rb_funcall(id,rb_intern("to_s"),0);
     const YPropertyValue & property = ptr->getProperty(RSTRING_PTR(id_str));
@@ -212,6 +230,7 @@ get_property(VALUE self, VALUE id)
         break;
     }
     return response;
+    YEXCEPTION_CATCH
 }
 
 /*
@@ -226,6 +245,7 @@ get_property(VALUE self, VALUE id)
 VALUE
 set_property(VALUE self, VALUE id, VALUE value)
 {
+    YEXCEPTION_TRY
     YWidget *ptr = ui_unwrap_widget(self);
     VALUE id_str = rb_funcall(id,rb_intern("to_s"),0);
     YPropertyValue yui_value;
@@ -244,7 +264,8 @@ set_property(VALUE self, VALUE id, VALUE value)
         break;
     }
     bool response = ptr->setProperty(StringValueCStr(id_str),yui_value);
-    return response;
+    return value;
+    YEXCEPTION_CATCH
 }
 
 VALUE cUIWidget;
