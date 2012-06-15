@@ -1,6 +1,9 @@
 module UI
   class Dialog
     alias_method :wait_for_event_c, :wait_for_event
+    class << self
+      alias_method :current, :current_dialog
+    end
     # extend wait_for_event with ability to process event in block.
     # @yield [event] pass raised event to block
     # @yield_param [UI::Event] event that occur

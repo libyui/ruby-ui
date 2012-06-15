@@ -5,13 +5,14 @@ module UI
   module Builder
     TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
     CONTAINER_ELEMENTS = [:vbox, :hbox, :hstretch, :vstretch,
-                          :hspacing, :vspacing, :hsquash, :vsquash, :hvsquash]
+                          :hspacing, :vspacing, :hsquash, :vsquash,
+                          :hvsquash, :replace_point]
     LEAF_ELEMENTS = [:push_button, :input_field,:label, :rich_text]
 
 
     # @visibility private
     def initialize_widget(el, opts)
-      el.id = opts[:id] if opts[:id]
+      el.id = opts[:id] if opts.has_key?(:id)
       properties = el.properties
       opts.each do |k,v|
         el[k] = v if properties.include? k
@@ -75,6 +76,8 @@ module UI
     # @!method vsquash(&block)
     # @!method hvsquash(&block)
 
+    # @!method replace_point(&block)
+
     # @!endgroup
 
 
@@ -111,7 +114,7 @@ module UI
     LEAF_ELEMENTS.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
         def #{element}(text, opts={}, &block)
-          el = Builder.create_#{element}(self,text)
+          el = Builder.create_#{element}(self.is_a?(UI::Widget) ? self : nil, text)
           initialize_widget(el, opts)
           el
         end
@@ -135,6 +138,10 @@ module UI
   end
 
   class Squash
+    include Builder
+  end
+
+  class ReplacePoint
     include Builder
   end
 

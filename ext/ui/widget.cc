@@ -1,9 +1,12 @@
 #include <yui/YWidgetID.h>
 #include <yui/YProperty.h>
+#include <yui/YUI.h>
+#include <yui/YDialog.h>
 
 #include "widget.h"
 #include "widget_object_map.h"
 #include "ruby_value_widget_id.h"
+#include "replace_point.h"
 
 /*
  * Document-class: UI::Widget
@@ -67,10 +70,15 @@ ui_wrap_widget(YWidget *wg)
   return Data_Wrap_Struct(cUIWidget, ui_widget_mark, ui_widget_dealloc, wg);
 }
 
+/*
+ * If VALUE is passed that referes to a destroyed object, it will throw a ruby
+ * exception. However if a nil VALUE is passed, it will return 0 as ptr.
+ */
 YWidget *
 ui_unwrap_widget(VALUE wdg)
 {
   YWidget *ptr = 0L;
+
   Data_Get_Struct (wdg, YWidget, ptr);
   if (!ptr) 
     rb_raise(rb_eRuntimeError, "Widget was already destroyed. Probably you destroyed its parent dialog.");
@@ -247,6 +255,67 @@ set_property(VALUE self, VALUE id, VALUE value)
     return response;
 }
 
+/*
+ * Replaces a the content of a replace point
+ *
+ * @overload replace
+ *   Replaces the content of this widget
+ *    @note The widget needs to be a +ReplacePoint+
+ *    @raise [RuntimeError] If the widget is not a replace point
+ *    @example
+ *      point = dialog.find(:point_id)
+ *      point.replace do
+ *       label "New content"
+ *     end
+ * @overload replace(id)
+ *   Replaces the content of the child replace point with id +id+
+ *   @param [Object] id identifier of the replace point
+ *   @return [Widget] the replacement widget build in the block
+ *   @yield [ReplacePoint] the parent replace point, also available implicitly as self
+ *   @raise [RuntimeError] If the widget with id +id+ is not a replace point or does not exist
+ *   @example
+ *     # vbox has a replace point child with id :point_id
+ *     vbox.replace(:point_id) do
+ *       label "New content"
+ *     end
+ */
+static VALUE
+replace(VALUE argc, VALUE *argv, VALUE self)
+{
+  VALUE id;
+  VALUE rbRepPoint = self;
+  rb_scan_args(argc, argv, "01", &id);
+
+  if (!NIL_P(id)) {
+    rbRepPoint = rb_funcall(self, rb_intern("find_widget"), 1, id);
+    if (NIL_P(rbRepPoint)) {
+      rb_raise(rb_eRuntimeError, "Can't find widget");
+    }
+  }
+
+  if (rb_funcall(rbRepPoint, rb_intern("is_a?"), 1, cUIReplacePoint) == Qfalse) {
+    rb_raise(rb_eRuntimeError, "Widgets can only be replaced on replace points");
+  }
+
+  // Prevent self-generated events
+  YUI::ui()->blockEvents();
+
+  YReplacePoint *replacePoint = ui_unwrap_replace_point(rbRepPoint);
+  YDialog *dialog = YDialog::currentDialog();
+
+  // delay screen updates until this block is left
+  YWidget::OptimizeChanges below(*dialog);
+  replacePoint->deleteChildren();
+
+  VALUE replacement = rb_funcall_passing_block(rbRepPoint, rb_intern("instance_eval"), 0, 0);
+  replacePoint->showChild();
+  dialog->setInitialSize();
+  dialog->checkShortcuts();
+
+  YUI::ui()->unblockEvents();
+  return replacement;
+}
+
 VALUE cUIWidget;
 void init_ui_widget()
 {
@@ -265,5 +334,6 @@ void init_ui_widget()
   rb_define_method(klass, "[]", RUBY_METHOD_FUNC(get_property), 1);
   rb_define_method(klass, "[]=", RUBY_METHOD_FUNC(set_property), 2);
   rb_define_method(klass, "properties", RUBY_METHOD_FUNC(get_properties), 0);
+  rb_define_method(klass, "replace", RUBY_METHOD_FUNC(replace), -1);
 }
 

@@ -71,4 +71,13 @@ module UI
   # Beep!
   #
 
+  # @return [Dialog] current dialog or +nil+ if no dialog open
+  def self.current_dialog
+    Dialog.current
+  end
+
+  def self.replace(id, &block)
+    current_dialog.replace(id, &block)
+  end
+
 end

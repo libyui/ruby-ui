@@ -18,6 +18,7 @@
 #include "layout_box.h"
 #include "label.h"
 #include "push_button.h"
+#include "replace_point.h"
 #include "rich_text.h"
 #include "spacing.h"
 #include "squash.h"
@@ -101,6 +102,7 @@ void Init_ui() {
   init_ui_push_button();
   init_ui_spacing();
   init_ui_squash();
+  init_ui_replace_point();
   init_ui_rich_text();
   
   init_ui_ui_builder();
