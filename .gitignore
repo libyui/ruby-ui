@@ -3,7 +3,7 @@
 Gemfile.lock
 pkg/*
 tmp
-examples/playground.*
+examples/playground*
 lib/*.so
 *.log
 .yardoc
