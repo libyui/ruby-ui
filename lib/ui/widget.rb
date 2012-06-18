@@ -44,5 +44,6 @@ module UI
       return :continue unless @value_change
       @value_change.call(event, dialog)
     end
+
   end
 end

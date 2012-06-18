@@ -1,6 +1,6 @@
 --readme README.rdoc
---embed-mixin UI::Builder
--
+--embed-mixins
 ext/**/*.cc
 lib/**/*.rb
+
 

@@ -41,17 +41,16 @@ ui_unwrap_dialog(VALUE dlg)
 static VALUE
 destroy(VALUE self)
 {
-    YEXCEPTION_TRY
-    YDialog *ptr = ui_unwrap_dialog(self);
-    dealloc(ptr);
-    //ptr->destroy();
+  YEXCEPTION_TRY
+  YDialog *ptr = ui_unwrap_dialog(self);
+  dealloc(ptr);
 
-    // Now the underlaying object is deleted (ptr) but
-    // the ruby object still exists, make it invalid
-    DATA_PTR(self) = 0;
-    YEXCEPTION_CATCH
+  // Now the underlaying object is deleted (ptr) but
+  // the ruby object still exists, make it invalid
+  DATA_PTR(self) = 0;
+  YEXCEPTION_CATCH
 
-    return Qnil;
+  return Qnil;
 }
 
 /*
@@ -66,11 +65,11 @@ destroy(VALUE self)
 static VALUE
 _open(VALUE self)
 {
-    YEXCEPTION_TRY
-    YDialog *ptr = ui_unwrap_dialog(self);
-    ptr->open();
-    return self;
-    YEXCEPTION_CATCH
+  YEXCEPTION_TRY
+  YDialog *ptr = ui_unwrap_dialog(self);
+  ptr->open();
+  return self;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -79,10 +78,10 @@ _open(VALUE self)
 static VALUE
 is_open(VALUE self)
 {
-    YEXCEPTION_TRY
-    YDialog *ptr = ui_unwrap_dialog(self);
-    return ptr->isOpen() ? Qtrue : Qfalse;
-    YEXCEPTION_CATCH
+  YEXCEPTION_TRY
+  YDialog *ptr = ui_unwrap_dialog(self);
+  return ptr->isOpen() ? Qtrue : Qfalse;
+  YEXCEPTION_CATCH
 }
 
 /*
@@ -90,21 +89,33 @@ is_open(VALUE self)
  */
 static VALUE
 resize(VALUE self)
-{    
-    YDialog *ptr = ui_unwrap_dialog(self);
-    ptr->recalcLayout();
-    return Qnil;
+{
+  YDialog *ptr = ui_unwrap_dialog(self);
+  ptr->recalcLayout();
+  return Qnil;
 }
 
 static VALUE
 wait_for_event(VALUE self)
 {
-    YEXCEPTION_TRY
-    YDialog *ptr = ui_unwrap_dialog(self);
-    new CallbackFilter(ptr); //see filter documentation
-    YEvent * ev = ptr->waitForEvent();
-    return convert_event(ev);
-    YEXCEPTION_CATCH
+  YEXCEPTION_TRY
+  YDialog *ptr = ui_unwrap_dialog(self);
+  new CallbackFilter(ptr); //see filter documentation
+  YEvent * ev = ptr->waitForEvent();
+  return convert_event(ev);
+  YEXCEPTION_CATCH
+}
+
+/*
+ * @return [Dialog] current dialog or +nil+ if no dialog open
+ */
+static VALUE
+current_dialog(VALUE self)
+{
+  YDialog *dlg = YDialog::currentDialog(false);
+
+  return widget_object_map_for(dlg);
+
 }
 
 VALUE cUIDialog;
@@ -120,6 +131,7 @@ void init_ui_dialog()
   rb_define_method(klass, "open", RUBY_METHOD_FUNC(_open), 0);
   rb_define_method(klass, "open?", RUBY_METHOD_FUNC(is_open), 0);
   rb_define_method(klass, "resize", RUBY_METHOD_FUNC(resize), 0);
+  rb_define_singleton_method(klass, "current_dialog", RUBY_METHOD_FUNC(current_dialog), 0);
 
 }
 
