@@ -36,6 +36,19 @@ YEvent * CallbackFilter::filter (YEvent * event)
   VALUE r_event = convert_event(event);
   VALUE response = rb_funcall(r_widget, method, 2, r_event, r_dialog);
 
+  VALUE ui = rb_define_module("UI");
+  if (rb_class_of(response) == rb_const_get(ui, rb_intern("WidgetEvent"))) {
+    // optimize if t is the same event we passed in
+    if (response == r_event) {
+      return event;
+    }
+    else {
+      // in the future we may allow the users to create their own new events to pass down
+      VALUE response_str = rb_any_to_s(response);
+      rb_raise(rb_eRuntimeError, "Event was not created by the UI (this is not supported yet): :%s", StringValueCStr(response_str));
+    }
+  }
+
   if (TYPE(response) == T_SYMBOL) {
     if (response == ID2SYM(rb_intern("continue"))) {
       return event;
@@ -44,10 +57,13 @@ YEvent * CallbackFilter::filter (YEvent * event)
       return new YCancelEvent(); //dialog is responsible to free this value
     }
     else {
-      rb_raise(rb_eRuntimeError, (string("Expected response: :continue or :cancel. Got: ") + StringValuePtr(response)).c_str());
+      VALUE got = rb_id2str(SYM2ID(response));
+      rb_raise(rb_eRuntimeError, "Expected response: :continue or :cancel. Got: :%s", StringValueCStr(got));
       return 0;
     }
   }
 
-  return (RTEST(response) ? event : 0);
+  // by default we don't pass the event down and assume
+  // it was "captured"
+  return 0;
 }
