@@ -36,7 +36,7 @@ ui_widget_dealloc(YWidget *wg)
 
     // Invalidate our own data
     if (!NIL_P(rb_child))
-      DATA_PTR(rb_child) = 0;    
+      DATA_PTR(rb_child) = 0;
   }
   //remove it from the map
   widget_object_map_remove(wg);
@@ -81,7 +81,7 @@ ui_unwrap_widget(VALUE wdg)
   YWidget *ptr = 0L;
 
   Data_Get_Struct (wdg, YWidget, ptr);
-  if (!ptr) 
+  if (!ptr)
     rb_raise(rb_eRuntimeError, "Widget was already destroyed. Probably you destroyed its parent dialog.");
   return ptr;
 }
