@@ -23,12 +23,6 @@ module UI
     end
     alias_method :clicked, :activated
 
-    # Fires event handler
-    def activated_fire (event, dialog)
-      return :continue unless @activated
-      @activated.call(event, dialog)
-    end
-
     # Defines callback when value of widget is changed
     # @see #activated
     # @yield [UI::Event] block that gets event when it occur
@@ -40,9 +34,17 @@ module UI
     end
 
     # Fires event handler
+    # @visibility private
     def value_change_fire (event, dialog)
       return :continue unless @value_change
       @value_change.call(event, dialog)
+    end
+
+    # Fires event handler
+    # @visibility private
+    def activated_fire (event, dialog)
+      return :continue unless @activated
+      @activated.call(event, dialog)
     end
 
   end
