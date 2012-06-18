@@ -2,6 +2,8 @@
 #include "event.h"
 #include "widget_object_map.h"
 
+using std::string;
+
 YEvent * CallbackFilter::filter (YEvent * event)
 {
   if (event->eventType() != YEvent::WidgetEvent) //we handle only widget events now
@@ -33,15 +35,19 @@ YEvent * CallbackFilter::filter (YEvent * event)
   VALUE r_dialog = widget_object_map_for(ydialog);
   VALUE r_event = convert_event(event);
   VALUE response = rb_funcall(r_widget, method, 2, r_event, r_dialog);
-  if (!RTEST(response))
-    return 0; //stop event
-  if (response == ID2SYM(rb_intern("continue")))
-    return event;
-  if (response == ID2SYM(rb_intern("cancel")))
-  {
-    return new YCancelEvent(); //dialog is responsible to free this value
+
+  if (TYPE(response) == T_SYMBOL) {
+    if (response == ID2SYM(rb_intern("continue"))) {
+      return event;
+    }
+    else if (response == ID2SYM(rb_intern("cancel"))) {
+      return new YCancelEvent(); //dialog is responsible to free this value
+    }
+    else {
+      rb_raise(rb_eRuntimeError, (string("Expected response: :continue or :cancel. Got: ") + StringValuePtr(response)).c_str());
+      return 0;
+    }
   }
 
-  rb_raise(rb_eRuntimeError, (std::string("Bad response from callback: ")+StringValuePtr(response)).c_str());
-  return 0; //to avoid warning
+  return (RTEST(response) ? event : 0);
 }
