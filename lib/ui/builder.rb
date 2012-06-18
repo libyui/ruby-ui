@@ -7,7 +7,7 @@ module UI
     CONTAINER_ELEMENTS = [:vbox, :hbox, :hstretch, :vstretch,
                           :hspacing, :vspacing, :hsquash, :vsquash,
                           :hvsquash, :replace_point]
-    LEAF_ELEMENTS = [:push_button, :input_field,:label, :rich_text]
+    LEAF_ELEMENTS = [:push_button, :input_field, :label, :progress_bar, :rich_text]
 
 
     # @visibility private
