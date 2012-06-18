@@ -139,18 +139,6 @@ current_dialog(VALUE self)
   YEXCEPTION_CATCH
 }
 
-/*
- * @return [Dialog] current dialog or +nil+ if no dialog open
- */
-static VALUE
-current_dialog(VALUE self)
-{
-  YDialog *dlg = YDialog::currentDialog(false);
-
-  return widget_object_map_for(dlg);
-
-}
-
 VALUE cUIDialog;
 void init_ui_dialog()
 {
