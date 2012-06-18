@@ -86,7 +86,7 @@ beep(VALUE self)
 
 extern VALUE widgetObjectMap;
 
-/*  
+/*
  * @visibility private
  */
 static VALUE object_map(VALUE self)
@@ -109,7 +109,7 @@ void Init_ui() {
 
   init_ui_widget();
   init_ui_dialog();
-  init_ui_input_field();  
+  init_ui_input_field();
   init_ui_label();
   init_ui_layout_box();
   init_ui_push_button();
@@ -117,7 +117,7 @@ void Init_ui() {
   init_ui_squash();
   init_ui_replace_point();
   init_ui_rich_text();
-  
+
   init_ui_ui_builder();
 
   YUILog::enableDebugLogging();

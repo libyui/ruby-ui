@@ -19,7 +19,7 @@ dealloc(YDialog *dlg)
 
   if (dlg->isValid())
     dlg->destroy();
-  
+
 }
 
 VALUE
@@ -33,7 +33,7 @@ ui_unwrap_dialog(VALUE dlg)
 {
   YDialog *ptr = 0L;
   Data_Get_Struct(dlg, YDialog, ptr);
-  if (!ptr) 
+  if (!ptr)
     rb_raise(rb_eRuntimeError, "Dialog was already destroyed!");
   return ptr;
 }
