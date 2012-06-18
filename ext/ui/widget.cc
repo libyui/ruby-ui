@@ -303,6 +303,7 @@ set_property(VALUE self, VALUE id, VALUE value)
 static VALUE
 replace(VALUE argc, VALUE *argv, VALUE self)
 {
+  YEXCEPTION_TRY
   VALUE id;
   VALUE rbRepPoint = self;
   rb_scan_args(argc, argv, "01", &id);
@@ -335,6 +336,7 @@ replace(VALUE argc, VALUE *argv, VALUE self)
 
   YUI::ui()->unblockEvents();
   return replacement;
+  YEXCEPTION_CATCH
 }
 
 VALUE cUIWidget;
