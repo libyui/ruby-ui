@@ -20,7 +20,13 @@ EOF
 
     dialog = UI.slim(template)
 
-    dialog.wait_for_event
+    assert_kind_of UI::Dialog, dialog
+    vbox = dialog.children.first
+    assert_kind_of UI::LayoutBox, vbox
+
+    widgets = vbox.children
+    assert_kind_of UI::Label, widgets[0]
+    (1..3).each { |k| assert_kind_of UI::InputField, widgets[k]}
   end
 
 end
