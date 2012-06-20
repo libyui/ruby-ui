@@ -1,6 +1,10 @@
 #ifndef RUBY_VALUE_WIDGET_ID
 #define RUBY_VALUE_WIDGET_ID
 
+#include <ruby.h>
+#include <string>
+#include <yui/YWidgetID.h>
+
 /**
  * Implement a Widget Id based on ruby objects
  */
