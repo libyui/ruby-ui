@@ -35,9 +35,10 @@ public:
      *
      * Reimplemented from YWidgetID.
      **/
-    virtual string toString() const
+    virtual std::string toString() const
     {
-        return StringValueCStr(_value);
+        VALUE strVal = rb_any_to_s(_value);
+        return StringValueCStr(strVal);
     }
 
     /**
