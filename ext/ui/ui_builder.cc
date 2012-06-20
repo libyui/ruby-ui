@@ -295,7 +295,7 @@ void init_ui_ui_builder() {
   VALUE mUI = rb_define_module("UI");
   mUIBuilder = rb_define_module_under(mUI, "Builder");
 
-  rb_define_singleton_method(mUIBuilder, "create_main_dialog", RUBY_METHOD_FUNC(create_popup_dialog), 0);
+  rb_define_singleton_method(mUIBuilder, "create_main_dialog", RUBY_METHOD_FUNC(create_main_dialog), 0);
   rb_define_singleton_method(mUIBuilder, "create_popup_dialog", RUBY_METHOD_FUNC(create_popup_dialog), 0);
 
   rb_define_singleton_method(mUIBuilder, "create_hbox", RUBY_METHOD_FUNC(create_hbox), 1);
