@@ -18,6 +18,10 @@ find_header 'YUI.h', File.join(base, 'yui')
 
 $CFLAGS = "#{$CFLAGS} -g -fvisibility=hidden -I#{base} -I#{File.join(base, 'yui')}"
 
+if RbConfig::CONFIG['ruby_version'] =~ /1\.8/
+  $CFLAGS = "#{$CFLAGS} -DRUBY18_SUPPORT"
+end
+
 $LIBS << " -lyui"
 
 create_makefile('ui')

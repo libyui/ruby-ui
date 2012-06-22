@@ -57,8 +57,8 @@ YEvent * CallbackFilter::filter (YEvent * event)
       return new YCancelEvent(); //dialog is responsible to free this value
     }
     else {
-      VALUE got = rb_id2str(SYM2ID(response));
-      rb_raise(rb_eRuntimeError, "Expected response: :continue or :cancel. Got: :%s", StringValueCStr(got));
+      ID got = SYM2ID(response);
+      rb_raise(rb_eRuntimeError, "Expected response: :continue or :cancel. Got: :%s", rb_id2name(got));
       return 0;
     }
   }
