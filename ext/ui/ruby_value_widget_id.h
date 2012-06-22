@@ -1,6 +1,10 @@
 #ifndef RUBY_VALUE_WIDGET_ID
 #define RUBY_VALUE_WIDGET_ID
 
+#include <ruby.h>
+#include <string>
+#include <yui/YWidgetID.h>
+
 /**
  * Implement a Widget Id based on ruby objects
  */
@@ -35,9 +39,10 @@ public:
      *
      * Reimplemented from YWidgetID.
      **/
-    virtual string toString() const
+    virtual std::string toString() const
     {
-        return StringValueCStr(_value);
+        VALUE strVal = rb_any_to_s(_value);
+        return StringValueCStr(strVal);
     }
 
     /**

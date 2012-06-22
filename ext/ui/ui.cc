@@ -18,6 +18,7 @@
 #include "input_field.h"
 #include "layout_box.h"
 #include "label.h"
+#include "progress_bar.h"
 #include "push_button.h"
 #include "replace_point.h"
 #include "rich_text.h"
@@ -112,6 +113,7 @@ void Init_ui() {
   init_ui_input_field();
   init_ui_label();
   init_ui_layout_box();
+  init_ui_progress_bar();
   init_ui_push_button();
   init_ui_spacing();
   init_ui_squash();

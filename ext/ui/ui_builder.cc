@@ -15,6 +15,7 @@
 #include "input_field.h"
 #include "layout_box.h"
 #include "label.h"
+#include "progress_bar.h"
 #include "push_button.h"
 #include "rich_text.h"
 #include "replace_point.h"
@@ -77,6 +78,22 @@ static VALUE create_hbox(VALUE self, VALUE parent)
 
   VALUE object = ui_wrap_layout_box(box);
   widget_object_map_add(box, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_progress_bar(VALUE self, VALUE parent, VALUE text)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YProgressBar *bar = YUI::widgetFactory()->createProgressBar(ptr, StringValuePtr(text));
+
+  VALUE object = ui_wrap_progress_bar(bar);
+  widget_object_map_add(bar, object);
   return object;
   YEXCEPTION_CATCH
 }
@@ -278,7 +295,7 @@ void init_ui_ui_builder() {
   VALUE mUI = rb_define_module("UI");
   mUIBuilder = rb_define_module_under(mUI, "Builder");
 
-  rb_define_singleton_method(mUIBuilder, "create_main_dialog", RUBY_METHOD_FUNC(create_popup_dialog), 0);
+  rb_define_singleton_method(mUIBuilder, "create_main_dialog", RUBY_METHOD_FUNC(create_main_dialog), 0);
   rb_define_singleton_method(mUIBuilder, "create_popup_dialog", RUBY_METHOD_FUNC(create_popup_dialog), 0);
 
   rb_define_singleton_method(mUIBuilder, "create_hbox", RUBY_METHOD_FUNC(create_hbox), 1);
@@ -294,7 +311,7 @@ void init_ui_ui_builder() {
   rb_define_singleton_method(mUIBuilder, "create_hvsquash", RUBY_METHOD_FUNC(create_hvsquash), 1);
   rb_define_singleton_method(mUIBuilder, "create_replace_point", RUBY_METHOD_FUNC(create_replace_point), 1);
 
-
+  rb_define_singleton_method(mUIBuilder, "create_progress_bar", RUBY_METHOD_FUNC(create_progress_bar), 2);
   rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);
   rb_define_singleton_method(mUIBuilder, "create_input_field", RUBY_METHOD_FUNC(create_input_field), 2);
