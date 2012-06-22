@@ -37,7 +37,7 @@ YEvent * CallbackFilter::filter (YEvent * event)
   VALUE response = rb_funcall(r_widget, method, 2, r_event, r_dialog);
 
   VALUE ui = rb_define_module("UI");
-  if (rb_class_of(response) == rb_const_get(ui, rb_intern("WidgetEvent"))) {
+  if (rb_class_of(response) == rb_const_get(ui, rb_intern("Event"))) {
     // optimize if t is the same event we passed in
     if (response == r_event) {
       return event;
