@@ -24,7 +24,7 @@ YEvent * CallbackFilter::filter (YEvent * event)
     }
     case YEvent::ValueChanged:
     {
-      method = rb_intern("value_change_fire");
+      method = rb_intern("value_changed_fire");
       break;
     }
   }
