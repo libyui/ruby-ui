@@ -32,7 +32,9 @@ static VALUE create_main_dialog(VALUE self)
 {
   YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createMainDialog();
-  return ui_wrap_dialog(dlg);
+  VALUE object = ui_wrap_dialog(dlg);
+  widget_object_map_add(dlg, object);
+  return object;
   YEXCEPTION_CATCH
 }
 
