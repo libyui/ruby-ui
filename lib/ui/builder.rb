@@ -108,6 +108,18 @@ module UI
     #       }
     #     }
 
+    # @!method progress_bar(label, max_value = 100)
+    #   Creates a progress bar
+    #   @param [String] label The caption above the progress bar
+    #   @param [Fixnum] max_value Maximum progress value
+    #   @return [ProgressBar]
+    #   @example
+    #     UI.main_dialog {
+    #       vbox {
+    #         progress_bar "Current progress"
+    #       }
+    #     }
+
     # @!method input_field(&block)
     # @!method rich_text(&block)
     # @!method label(&block)
