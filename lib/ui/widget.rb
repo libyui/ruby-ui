@@ -29,15 +29,15 @@ module UI
     # @yieldreturn [nil,Symbol] return value specify what do in event handling
     #     nil represents stopping of event, :cancel generate CancelEvent instead
     #     and :continue pass event further
-    def value_change(&block)
+    def value_changed(&block)
       @value_changed = block_given? ? block : nil
     end
 
     # Fires event handler
     # @visibility private
-    def value_change_fire (event, dialog)
-      return :continue unless @value_change
-      @value_change.call(event, dialog)
+    def value_changed_fire (event, dialog)
+      return :continue unless @value_changed
+      @value_changed.call(event, dialog)
     end
 
     # Fires event handler

@@ -32,7 +32,10 @@ static VALUE create_main_dialog(VALUE self)
 {
   YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createMainDialog();
-  return ui_wrap_dialog(dlg);
+
+  VALUE object = ui_wrap_dialog(dlg);
+  widget_object_map_add(dlg, object);
+  return object;
   YEXCEPTION_CATCH
 }
 
@@ -85,12 +88,28 @@ static VALUE create_hbox(VALUE self, VALUE parent)
 /*
  * @visibility private
  */
-static VALUE create_progress_bar(VALUE self, VALUE parent, VALUE text)
+static VALUE create_progress_bar(int argc, VALUE *argv, VALUE self)
 {
   YEXCEPTION_TRY
+
+  VALUE parent;
+  VALUE text;
+  VALUE maxProgress;
+  VALUE currProgress;
+
+  rb_scan_args(argc, argv, "22", &parent, &text, &maxProgress, &currProgress);
+
   YWidget *ptr = ui_unwrap_widget(parent);
 
-  YProgressBar *bar = YUI::widgetFactory()->createProgressBar(ptr, StringValuePtr(text));
+  YProgressBar *bar;
+  if (!NIL_P(maxProgress))
+    bar = YUI::widgetFactory()->createProgressBar(ptr, StringValuePtr(text),
+                                                  NUM2INT(maxProgress));
+  else
+    bar = YUI::widgetFactory()->createProgressBar(ptr, StringValuePtr(text));
+
+  if (!NIL_P(currProgress))
+    bar->setValue(NUM2INT(currProgress));
 
   VALUE object = ui_wrap_progress_bar(bar);
   widget_object_map_add(bar, object);
@@ -311,7 +330,7 @@ void init_ui_ui_builder() {
   rb_define_singleton_method(mUIBuilder, "create_hvsquash", RUBY_METHOD_FUNC(create_hvsquash), 1);
   rb_define_singleton_method(mUIBuilder, "create_replace_point", RUBY_METHOD_FUNC(create_replace_point), 1);
 
-  rb_define_singleton_method(mUIBuilder, "create_progress_bar", RUBY_METHOD_FUNC(create_progress_bar), 2);
+  rb_define_singleton_method(mUIBuilder, "create_progress_bar", RUBY_METHOD_FUNC(create_progress_bar), -1);
   rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);
   rb_define_singleton_method(mUIBuilder, "create_input_field", RUBY_METHOD_FUNC(create_input_field), 2);

@@ -301,7 +301,7 @@ set_property(VALUE self, VALUE id, VALUE value)
  *     end
  */
 static VALUE
-replace(VALUE argc, VALUE *argv, VALUE self)
+replace(int argc, VALUE *argv, VALUE self)
 {
   YEXCEPTION_TRY
   VALUE id;

@@ -22,6 +22,30 @@ module UI
       end
     end
 
+    [TOPLEVEL_ELEMENTS, CONTAINER_ELEMENTS,
+      LEAF_ELEMENTS].flatten.each do |element|
+      eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
+        def #{element}(*args, &block)
+          opts = {}
+          # If last element is a Hash
+          # we assume they are options
+          if args.last.is_a?(Hash)
+            opts = args.pop
+          end
+          # add parent if needed
+          unless TOPLEVEL_ELEMENTS.include?(:#{element})
+            args.unshift(self)
+          end
+          el = Builder.create_#{element}(*args)
+          initialize_widget(el, opts)
+          unless LEAF_ELEMENTS.include?(:#{element})
+            el.instance_eval(&block)
+          end
+          el
+        end
+      EOM
+    end
+
     # @!group Top level elements
 
     # @!method main_dialog(&block)
@@ -30,24 +54,16 @@ module UI
     #     dlg = UI.main_dialog {
     #       ...
     #     }
-
+    #def main_dialog(opts={}, &block)
+    #  el = Builder.create_main_dialog
+    #
+    #end
     # @!method popup_dialog(&block)
     #   @return [Dialog] a popup dialog
     #   @example
     #     dlg = UI.popup_dialog {
     #       ...
     #     }
-
-    TOPLEVEL_ELEMENTS.each do |element|
-      eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
-        def #{element}(opts={}, &block)
-          el = Builder.create_#{element}
-          initialize_widget(el, opts)
-          el.instance_eval(&block)
-          el
-        end
-      EOM
-    end
 
     # @!endgroup
 
@@ -80,19 +96,6 @@ module UI
 
     # @!endgroup
 
-
-
-    CONTAINER_ELEMENTS.each do |element|
-      eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
-        def #{element}(opts={}, &block)
-          el = Builder.create_#{element}(self)
-          initialize_widget(el, opts)
-          el.instance_eval(&block)
-          el
-        end
-      EOM
-    end
-
     # @!group Elements
 
     # @!method push_button(text, &block)
@@ -105,21 +108,23 @@ module UI
     #       }
     #     }
 
+    # @!method progress_bar(label, max_value = 100)
+    #   Creates a progress bar
+    #   @param [String] label The caption above the progress bar
+    #   @param [Fixnum] max_value Maximum progress value
+    #   @return [ProgressBar]
+    #   @example
+    #     UI.main_dialog {
+    #       vbox {
+    #         progress_bar "Current progress"
+    #       }
+    #     }
+
     # @!method input_field(&block)
     # @!method rich_text(&block)
     # @!method label(&block)
 
     # @!endgroup
-
-    LEAF_ELEMENTS.each do |element|
-      eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
-        def #{element}(text, opts={}, &block)
-          el = Builder.create_#{element}(self.is_a?(UI::Widget) ? self : nil, text)
-          initialize_widget(el, opts)
-          el
-        end
-      EOM
-    end
 
   end
 
