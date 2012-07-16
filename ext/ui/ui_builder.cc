@@ -12,6 +12,7 @@
 #include "ui.h"
 #include "widget.h"
 #include "dialog.h"
+#include "frame.h"
 #include "input_field.h"
 #include "layout_box.h"
 #include "label.h"
@@ -22,6 +23,8 @@
 #include "spacing.h"
 #include "squash.h"
 #include "replace_point.h"
+
+#include "ui_builder_alignment.h"
 
 VALUE mUIBuilder;
 
@@ -296,6 +299,23 @@ static VALUE create_hvsquash(VALUE self, VALUE parent)
 /*
  * @visibility private
  */
+static VALUE create_frame(VALUE self, VALUE parent, VALUE label)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YFrame *frame = YUI::widgetFactory()->createFrame(ptr, StringValueCStr(label));
+
+  VALUE object = ui_wrap_frame(frame);
+  widget_object_map_add(frame, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+
+/*
+ * @visibility private
+ */
 static VALUE create_replace_point(VALUE self, VALUE parent)
 {
   YEXCEPTION_TRY
@@ -325,11 +345,14 @@ void init_ui_ui_builder() {
   rb_define_singleton_method(mUIBuilder, "create_vspacing", RUBY_METHOD_FUNC(create_vspacing), 1);
   rb_define_singleton_method(mUIBuilder, "create_hspacing", RUBY_METHOD_FUNC(create_hspacing), 1);
 
+  init_ui_ui_builder_alignment();
+
   rb_define_singleton_method(mUIBuilder, "create_hsquash", RUBY_METHOD_FUNC(create_hsquash), 1);
   rb_define_singleton_method(mUIBuilder, "create_vsquash", RUBY_METHOD_FUNC(create_vsquash), 1);
   rb_define_singleton_method(mUIBuilder, "create_hvsquash", RUBY_METHOD_FUNC(create_hvsquash), 1);
   rb_define_singleton_method(mUIBuilder, "create_replace_point", RUBY_METHOD_FUNC(create_replace_point), 1);
 
+  rb_define_singleton_method(mUIBuilder, "create_frame", RUBY_METHOD_FUNC(create_frame), 2);
   rb_define_singleton_method(mUIBuilder, "create_progress_bar", RUBY_METHOD_FUNC(create_progress_bar), -1);
   rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);

@@ -14,7 +14,9 @@
 #include "exception_guard.h"
 #include "ui.h"
 #include "widget.h"
+#include "alignment.h"
 #include "dialog.h"
+#include "frame.h"
 #include "input_field.h"
 #include "layout_box.h"
 #include "label.h"
@@ -116,7 +118,9 @@ void Init_ui() {
   init_ui_progress_bar();
   init_ui_push_button();
   init_ui_spacing();
+  init_ui_alignment();
   init_ui_squash();
+  init_ui_frame();
   init_ui_replace_point();
   init_ui_rich_text();
 
