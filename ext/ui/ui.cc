@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <deque>
+#include <string>
 
 #include <yui/YUI.h>
 #include <yui/YWidgetFactory.h>
@@ -17,16 +18,21 @@
 #include "alignment.h"
 #include "dialog.h"
 #include "frame.h"
+#include "check_box.h"
 #include "input_field.h"
 #include "layout_box.h"
 #include "label.h"
 #include "progress_bar.h"
 #include "push_button.h"
+#include "radio_button.h"
+#include "radio_button_group.h"
 #include "replace_point.h"
 #include "rich_text.h"
 #include "spacing.h"
 #include "squash.h"
 #include "ui_builder.h"
+
+using std::string;
 
 static VALUE
 ask_for_existing_directory(VALUE self, VALUE start_dir, VALUE headline)
@@ -112,6 +118,7 @@ void Init_ui() {
 
   init_ui_widget();
   init_ui_dialog();
+  init_ui_check_box();
   init_ui_input_field();
   init_ui_label();
   init_ui_layout_box();
@@ -121,6 +128,8 @@ void Init_ui() {
   init_ui_alignment();
   init_ui_squash();
   init_ui_frame();
+  init_ui_radio_button();
+  init_ui_radio_button_group();
   init_ui_replace_point();
   init_ui_rich_text();
 

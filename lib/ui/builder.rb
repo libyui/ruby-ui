@@ -8,8 +8,9 @@ module UI
                           :hspacing, :vspacing, :hsquash, :vsquash,
                           :hvsquash, :frame, :replace_point,
                           :left, :right, :top, :bottom, :hcenter, :vcenter,
-                          :hvcenter, :margin_box]
-    LEAF_ELEMENTS = [:push_button, :input_field, :label, :progress_bar, :rich_text]
+                          :hvcenter, :margin_box, :radio_button_group]
+    LEAF_ELEMENTS = [:push_button, :input_field, :check_box, :radio_button,
+                     :label, :progress_bar, :rich_text]
 
 
     # @visibility private
@@ -103,6 +104,8 @@ module UI
     # @!method hvcenter(&block)
     # @!method margin_box(&block)
 
+    # @!method radio_button_group(&block)
+
     # @!method frame(label, &block)
     #   Creates a frame
     #   @param [String] label
@@ -145,9 +148,10 @@ module UI
     #       }
     #     }
 
-    # @!method input_field(&block)
-    # @!method rich_text(&block)
-    # @!method label(&block)
+    # @!method input_field(value)
+    # @!method check_box(label)
+    # @!method rich_text(text)
+    # @!method label(text)
 
     # @!endgroup
 
@@ -172,6 +176,10 @@ module UI
   end
 
   class Frame
+    include Builder
+  end
+
+  class RadioButtonGroup
     include Builder
   end
 
