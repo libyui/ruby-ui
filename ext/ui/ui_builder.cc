@@ -23,6 +23,7 @@
 #include "radio_button_group.h"
 #include "replace_point.h"
 #include "rich_text.h"
+#include "selection_box.h"
 #include "spacing.h"
 #include "squash.h"
 #include "replace_point.h"
@@ -242,6 +243,22 @@ static VALUE create_rich_text(VALUE self, VALUE parent, VALUE text)
 /*
  * @visibility private
  */
+static VALUE create_selection_box(VALUE self, VALUE parent, VALUE label)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YSelectionBox *box = YUI::widgetFactory()->createSelectionBox(ptr, StringValuePtr(label));
+
+  VALUE object = ui_wrap_selection_box(box);
+  widget_object_map_add(box, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+/*
+ * @visibility private
+ */
 static VALUE create_hstretch(VALUE self, VALUE parent)
 {
   YEXCEPTION_TRY
@@ -414,6 +431,7 @@ void init_ui_ui_builder() {
   rb_define_singleton_method(mUIBuilder, "create_input_field", RUBY_METHOD_FUNC(create_input_field), 2);
   rb_define_singleton_method(mUIBuilder, "create_radio_button", RUBY_METHOD_FUNC(create_radio_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_rich_text", RUBY_METHOD_FUNC(create_rich_text), 2);
+  rb_define_singleton_method(mUIBuilder, "create_selection_box", RUBY_METHOD_FUNC(create_selection_box), 2);
 
   rb_define_singleton_method(mUIBuilder, "create_radio_button_group", RUBY_METHOD_FUNC(create_radio_button_group), 1);
   rb_define_singleton_method(mUIBuilder, "create_replace_point", RUBY_METHOD_FUNC(create_replace_point), 1);

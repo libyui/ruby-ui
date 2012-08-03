@@ -10,7 +10,7 @@ module UI
                           :left, :right, :top, :bottom, :hcenter, :vcenter,
                           :hvcenter, :margin_box, :radio_button_group]
     LEAF_ELEMENTS = [:push_button, :input_field, :check_box, :radio_button,
-                     :label, :progress_bar, :rich_text]
+                     :label, :progress_bar, :rich_text, :selection_box]
 
 
     # @visibility private
