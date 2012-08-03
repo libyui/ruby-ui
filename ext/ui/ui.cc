@@ -103,6 +103,18 @@ static VALUE object_map(VALUE self)
   return widgetObjectMap;
 }
 
+/*
+ * @visibility private
+ */
+static VALUE
+debug(VALUE klass, VALUE msg)
+{
+  YEXCEPTION_TRY
+  const char *str = StringValueCStr(msg);
+  yuiDebug() << str << std::endl;
+  YEXCEPTION_CATCH
+}
+
 VALUE mUI;
 
 void Init_ui() {
@@ -115,6 +127,7 @@ void Init_ui() {
   rb_define_singleton_method(mUI, "busy_cursor", RUBY_METHOD_FUNC(busy_cursor), 0);
   rb_define_singleton_method(mUI, "normal_cursor", RUBY_METHOD_FUNC(normal_cursor), 0);
   rb_define_singleton_method(mUI, "beep", RUBY_METHOD_FUNC(beep), 0);
+  rb_define_singleton_method(mUI, "debug", RUBY_METHOD_FUNC(debug), 1);
 
   init_ui_widget();
   init_ui_dialog();
