@@ -9,4 +9,7 @@ void init_ui_dialog();
 extern VALUE cUIDialog;
 VALUE ui_wrap_dialog(YDialog *dlg);
 
+void ui_dialog_push(YDialog *dlg);
+
+
 #endif

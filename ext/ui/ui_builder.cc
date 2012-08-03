@@ -38,6 +38,8 @@ static VALUE create_main_dialog(VALUE self)
 {
   YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createMainDialog();
+  ui_dialog_push(dlg);
+  yuiDebug() << "new " << dlg << std::endl;
 
   VALUE object = ui_wrap_dialog(dlg);
   widget_object_map_add(dlg, object);
@@ -52,6 +54,8 @@ static VALUE create_popup_dialog(VALUE self)
 {
   YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createPopupDialog();
+  ui_dialog_push(dlg);
+  yuiDebug() << "new " << dlg << std::endl;
 
   VALUE object = ui_wrap_dialog(dlg);
   widget_object_map_add(dlg, object);

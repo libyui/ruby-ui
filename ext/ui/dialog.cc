@@ -1,8 +1,22 @@
+#include <list>
+
 #include "widget.h"
 #include "dialog.h"
 #include "event.h"
 #include "callback_filter.h"
 #include "exception_guard.h"
+
+using std::list;
+using std::find;
+
+/**
+ * We have to keep our own duplicated dialog
+ * stack as libyui do not provide access to it
+ * and we need to delete the dialogs in the
+ * right order by implementing the GC
+ * mark function.
+ */
+list<YDialog *> sDialogStack;
 
 /*
  * Document-class: UI::Dialog
@@ -13,19 +27,54 @@
 static void
 dealloc(YDialog *dlg)
 {
-  yuiDebug() << "destroy ruby object for dialog" << dlg << std::endl;
-
   ui_widget_dealloc(dlg);
+  // Only delete the dialog if it is the topmost one.
+  // Deletion in random order should not happen thanks to
+  // sDialogStack and mark(), except at exit.
+  //
+  // At exit the UI finalizer deletes all dialogs anyway so
+  // we don't care.
+  if (dlg->isTopmostDialog() && dlg->isValid() && dlg->destroy(false)) {
+    yuiDebug() << "destroy ruby object for dialog" << dlg << std::endl;
 
-  if (dlg->isValid())
-    dlg->destroy();
+  //  dlg->deleteTopmostDialog();
+    sDialogStack.pop_back();
+  }
+  else
+  {
+    yuiDebug() << "Not topmost. Skipping destroy ruby object for dialog" << dlg << std::endl;
+  }
+}
 
+static void
+mark(YDialog *dlg)
+{
+  yuiDebug() << "mark " << dlg << std::endl;
+  // mark all parent dialogs
+  list<YDialog *>::reverse_iterator it = find(sDialogStack.rbegin(), sDialogStack.rend(), dlg);
+  if (it != sDialogStack.rend()) {
+    it++;
+    for (; it != sDialogStack.rend(); ++it) {
+      VALUE obj = widget_object_map_for(*it);
+      if (obj != Qnil) {
+        yuiDebug() << "  -> " << *it << std::endl;
+        rb_gc_mark(obj);
+      }
+    }
+  }
+  ui_widget_mark(dlg);
+}
+
+void
+ui_dialog_push(YDialog *dlg)
+{
+  sDialogStack.push_back(dlg);
 }
 
 VALUE
 ui_wrap_dialog(YDialog *dlg)
 {
-  return Data_Wrap_Struct(cUIDialog, ui_widget_mark, dealloc, dlg);
+  return Data_Wrap_Struct(cUIDialog, mark, dealloc, dlg);
 }
 
 YDialog *
