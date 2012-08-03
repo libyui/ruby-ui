@@ -188,6 +188,20 @@ current_dialog(VALUE self)
   YEXCEPTION_CATCH
 }
 
+/*
+ * how the specified text in a pop-up dialog with a local event loop.
+ * This is useful for help texts.
+ * 'richText' indicates if YRichText formatting should be applied.
+ */
+static VALUE
+show_text(VALUE klass, VALUE text)
+{
+  YEXCEPTION_TRY
+  YDialog::showText(StringValueCStr(text));
+  return Qnil;
+  YEXCEPTION_CATCH
+}
+
 VALUE cUIDialog;
 void init_ui_dialog()
 {
@@ -202,6 +216,7 @@ void init_ui_dialog()
   rb_define_method(klass, "open?", RUBY_METHOD_FUNC(is_open), 0);
   rb_define_method(klass, "resize", RUBY_METHOD_FUNC(resize), 0);
   rb_define_singleton_method(klass, "current_dialog", RUBY_METHOD_FUNC(current_dialog), 0);
+  rb_define_singleton_method(klass, "show_text", RUBY_METHOD_FUNC(show_text), 1);
 
 }
 
