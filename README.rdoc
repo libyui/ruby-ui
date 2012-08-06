@@ -63,13 +63,16 @@ There is basically three ways how to handle events. It is possible to handle it 
 define callbacks on widgets or combination of both approach. Events are documented in
 #UI::Event and its ancestor.
 
-=== Events Examples
+=== Waiting for an event
 
-simple example with event loop
+You can use Dialog#wait_for_event to wait and capture the next event.
 
 {include:file:examples/basic_event.rb}
 
-Example with event loop in block
+=== Ruby block as an event loop
+
+You can also provide a block to Dialog#wait_for_event and a loop will be started, passing
+each event as a parameter to the block.
 
 {include:file:examples/loop_event.rb}
 
