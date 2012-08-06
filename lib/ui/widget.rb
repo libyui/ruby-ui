@@ -16,7 +16,7 @@ module UI
     # @yield [UI::Event,UI::Dialog] block that gets event when it occur and
     #     dialog where it happen
     # @yieldreturn [nil,Symbol] return value specify what do in event handling
-    #     nil represents stopping of event, :cancel generate CancelEvent instead
+    #     nil represents stopping of event, :cancel generates CancelEvent instead
     #     and :continue pass event further
     def activated(&block)
       @activated = block_given? ? block : nil
@@ -27,7 +27,7 @@ module UI
     # @see #activated
     # @yield [UI::Event] block that gets event when it occur
     # @yieldreturn [nil,Symbol] return value specify what do in event handling
-    #     nil represents stopping of event, :cancel generate CancelEvent instead
+    #     nil represents stopping of event, :cancel generates CancelEvent instead
     #     and :continue pass event further
     def value_changed(&block)
       @value_changed = block_given? ? block : nil
