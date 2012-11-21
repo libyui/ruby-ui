@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <deque>
+#include <string>
 
 #include <yui/YUI.h>
 #include <yui/YWidgetFactory.h>
@@ -14,17 +15,27 @@
 #include "exception_guard.h"
 #include "ui.h"
 #include "widget.h"
+#include "alignment.h"
 #include "dialog.h"
+#include "frame.h"
+#include "check_box.h"
 #include "input_field.h"
+#include "item.h"
 #include "layout_box.h"
 #include "label.h"
 #include "progress_bar.h"
 #include "push_button.h"
+#include "radio_button.h"
+#include "radio_button_group.h"
 #include "replace_point.h"
 #include "rich_text.h"
+#include "selection_box.h"
+#include "selection_widget.h"
 #include "spacing.h"
 #include "squash.h"
 #include "ui_builder.h"
+
+using std::string;
 
 static VALUE
 ask_for_existing_directory(VALUE self, VALUE start_dir, VALUE headline)
@@ -95,6 +106,18 @@ static VALUE object_map(VALUE self)
   return widgetObjectMap;
 }
 
+/*
+ * @visibility private
+ */
+static VALUE
+debug(VALUE klass, VALUE msg)
+{
+  YEXCEPTION_TRY
+  const char *str = StringValueCStr(msg);
+  yuiDebug() << str << std::endl;
+  YEXCEPTION_CATCH
+}
+
 VALUE mUI;
 
 void Init_ui() {
@@ -107,18 +130,27 @@ void Init_ui() {
   rb_define_singleton_method(mUI, "busy_cursor", RUBY_METHOD_FUNC(busy_cursor), 0);
   rb_define_singleton_method(mUI, "normal_cursor", RUBY_METHOD_FUNC(normal_cursor), 0);
   rb_define_singleton_method(mUI, "beep", RUBY_METHOD_FUNC(beep), 0);
+  rb_define_singleton_method(mUI, "debug", RUBY_METHOD_FUNC(debug), 1);
 
   init_ui_widget();
   init_ui_dialog();
+  init_ui_check_box();
   init_ui_input_field();
+  init_ui_item();
   init_ui_label();
   init_ui_layout_box();
   init_ui_progress_bar();
   init_ui_push_button();
   init_ui_spacing();
+  init_ui_alignment();
   init_ui_squash();
+  init_ui_frame();
+  init_ui_radio_button();
+  init_ui_radio_button_group();
   init_ui_replace_point();
   init_ui_rich_text();
+  init_ui_selection_widget();
+  init_ui_selection_box();
 
   init_ui_ui_builder();
 

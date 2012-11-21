@@ -12,16 +12,23 @@
 #include "ui.h"
 #include "widget.h"
 #include "dialog.h"
+#include "frame.h"
+#include "check_box.h"
 #include "input_field.h"
 #include "layout_box.h"
 #include "label.h"
 #include "progress_bar.h"
 #include "push_button.h"
-#include "rich_text.h"
+#include "radio_button.h"
+#include "radio_button_group.h"
 #include "replace_point.h"
+#include "rich_text.h"
+#include "selection_box.h"
 #include "spacing.h"
 #include "squash.h"
 #include "replace_point.h"
+
+#include "ui_builder_alignment.h"
 
 VALUE mUIBuilder;
 
@@ -32,6 +39,8 @@ static VALUE create_main_dialog(VALUE self)
 {
   YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createMainDialog();
+  ui_dialog_push(dlg);
+  yuiDebug() << "new " << dlg << std::endl;
 
   VALUE object = ui_wrap_dialog(dlg);
   widget_object_map_add(dlg, object);
@@ -46,6 +55,8 @@ static VALUE create_popup_dialog(VALUE self)
 {
   YEXCEPTION_TRY
   YDialog *dlg = YUI::widgetFactory()->createPopupDialog();
+  ui_dialog_push(dlg);
+  yuiDebug() << "new " << dlg << std::endl;
 
   VALUE object = ui_wrap_dialog(dlg);
   widget_object_map_add(dlg, object);
@@ -152,6 +163,22 @@ static VALUE create_label(VALUE self, VALUE parent, VALUE text)
 /*
  * @visibility private
  */
+static VALUE create_check_box(VALUE self, VALUE parent, VALUE text)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YCheckBox *box = YUI::widgetFactory()->createCheckBox(ptr, StringValuePtr(text));
+
+  VALUE object = ui_wrap_check_box(box);
+  widget_object_map_add(box, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+/*
+ * @visibility private
+ */
 static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
 {
   YEXCEPTION_TRY
@@ -168,6 +195,38 @@ static VALUE create_input_field(VALUE self, VALUE parent, VALUE text)
 /*
  * @visibility private
  */
+static VALUE create_radio_button(VALUE self, VALUE parent, VALUE text)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YRadioButton *btn = YUI::widgetFactory()->createRadioButton(ptr, StringValuePtr(text));
+
+  VALUE object = ui_wrap_radio_button(btn);
+  widget_object_map_add(btn, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_radio_button_group(VALUE self, VALUE parent)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YRadioButtonGroup *grp = YUI::widgetFactory()->createRadioButtonGroup(ptr);
+
+  VALUE object = ui_wrap_radio_button_group(grp);
+  widget_object_map_add(grp, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+/*
+ * @visibility private
+ */
 static VALUE create_rich_text(VALUE self, VALUE parent, VALUE text)
 {
   YEXCEPTION_TRY
@@ -177,6 +236,22 @@ static VALUE create_rich_text(VALUE self, VALUE parent, VALUE text)
 
   VALUE object = ui_wrap_rich_text(rich);
   widget_object_map_add(rich, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+/*
+ * @visibility private
+ */
+static VALUE create_selection_box(VALUE self, VALUE parent, VALUE label)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YSelectionBox *box = YUI::widgetFactory()->createSelectionBox(ptr, StringValuePtr(label));
+
+  VALUE object = ui_wrap_selection_box(box);
+  widget_object_map_add(box, object);
   return object;
   YEXCEPTION_CATCH
 }
@@ -296,6 +371,23 @@ static VALUE create_hvsquash(VALUE self, VALUE parent)
 /*
  * @visibility private
  */
+static VALUE create_frame(VALUE self, VALUE parent, VALUE label)
+{
+  YEXCEPTION_TRY
+  YWidget *ptr = ui_unwrap_widget(parent);
+
+  YFrame *frame = YUI::widgetFactory()->createFrame(ptr, StringValueCStr(label));
+
+  VALUE object = ui_wrap_frame(frame);
+  widget_object_map_add(frame, object);
+  return object;
+  YEXCEPTION_CATCH
+}
+
+
+/*
+ * @visibility private
+ */
 static VALUE create_replace_point(VALUE self, VALUE parent)
 {
   YEXCEPTION_TRY
@@ -325,15 +417,23 @@ void init_ui_ui_builder() {
   rb_define_singleton_method(mUIBuilder, "create_vspacing", RUBY_METHOD_FUNC(create_vspacing), 1);
   rb_define_singleton_method(mUIBuilder, "create_hspacing", RUBY_METHOD_FUNC(create_hspacing), 1);
 
+  init_ui_ui_builder_alignment();
+
   rb_define_singleton_method(mUIBuilder, "create_hsquash", RUBY_METHOD_FUNC(create_hsquash), 1);
   rb_define_singleton_method(mUIBuilder, "create_vsquash", RUBY_METHOD_FUNC(create_vsquash), 1);
   rb_define_singleton_method(mUIBuilder, "create_hvsquash", RUBY_METHOD_FUNC(create_hvsquash), 1);
-  rb_define_singleton_method(mUIBuilder, "create_replace_point", RUBY_METHOD_FUNC(create_replace_point), 1);
 
+  rb_define_singleton_method(mUIBuilder, "create_frame", RUBY_METHOD_FUNC(create_frame), 2);
   rb_define_singleton_method(mUIBuilder, "create_progress_bar", RUBY_METHOD_FUNC(create_progress_bar), -1);
   rb_define_singleton_method(mUIBuilder, "create_push_button", RUBY_METHOD_FUNC(create_push_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_label", RUBY_METHOD_FUNC(create_label), 2);
+  rb_define_singleton_method(mUIBuilder, "create_check_box", RUBY_METHOD_FUNC(create_check_box), 2);
   rb_define_singleton_method(mUIBuilder, "create_input_field", RUBY_METHOD_FUNC(create_input_field), 2);
+  rb_define_singleton_method(mUIBuilder, "create_radio_button", RUBY_METHOD_FUNC(create_radio_button), 2);
   rb_define_singleton_method(mUIBuilder, "create_rich_text", RUBY_METHOD_FUNC(create_rich_text), 2);
+  rb_define_singleton_method(mUIBuilder, "create_selection_box", RUBY_METHOD_FUNC(create_selection_box), 2);
+
+  rb_define_singleton_method(mUIBuilder, "create_radio_button_group", RUBY_METHOD_FUNC(create_radio_button_group), 1);
+  rb_define_singleton_method(mUIBuilder, "create_replace_point", RUBY_METHOD_FUNC(create_replace_point), 1);
 
 }

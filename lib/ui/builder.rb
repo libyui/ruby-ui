@@ -6,8 +6,11 @@ module UI
     TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
     CONTAINER_ELEMENTS = [:vbox, :hbox, :hstretch, :vstretch,
                           :hspacing, :vspacing, :hsquash, :vsquash,
-                          :hvsquash, :replace_point]
-    LEAF_ELEMENTS = [:push_button, :input_field, :label, :progress_bar, :rich_text]
+                          :hvsquash, :frame, :replace_point,
+                          :left, :right, :top, :bottom, :hcenter, :vcenter,
+                          :hvcenter, :margin_box, :radio_button_group]
+    LEAF_ELEMENTS = [:push_button, :input_field, :check_box, :radio_button,
+                     :label, :progress_bar, :rich_text, :selection_box]
 
 
     # @visibility private
@@ -92,6 +95,31 @@ module UI
     # @!method vsquash(&block)
     # @!method hvsquash(&block)
 
+    # @!method left(&block)
+    # @!method right(&block)
+    # @!method top(&block)
+    # @!method bottom(&block)
+    # @!method hcenter(&block)
+    # @!method vcenter(&block)
+    # @!method hvcenter(&block)
+    # @!method margin_box(&block)
+
+    # @!method radio_button_group(&block)
+
+    # @!method frame(label, &block)
+    #   Creates a frame
+    #   @param [String] label
+    #   @param [Fixnum] max_value Maximum progress value
+    #   @return [Frame]
+    #   @example
+    #     UI.main_dialog {
+    #       vbox {
+    #         frame "Settings" {
+    #            ...
+    #         }
+    #       }
+    #     }
+
     # @!method replace_point(&block)
 
     # @!endgroup
@@ -120,9 +148,10 @@ module UI
     #       }
     #     }
 
-    # @!method input_field(&block)
-    # @!method rich_text(&block)
-    # @!method label(&block)
+    # @!method input_field(value)
+    # @!method check_box(label)
+    # @!method rich_text(text)
+    # @!method label(text)
 
     # @!endgroup
 
@@ -146,7 +175,19 @@ module UI
     include Builder
   end
 
+  class Frame
+    include Builder
+  end
+
+  class RadioButtonGroup
+    include Builder
+  end
+
   class ReplacePoint
+    include Builder
+  end
+
+  class Alignment
     include Builder
   end
 

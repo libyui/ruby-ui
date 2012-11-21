@@ -27,6 +27,11 @@ YEvent * CallbackFilter::filter (YEvent * event)
       method = rb_intern("value_changed_fire");
       break;
     }
+    case YEvent::SelectionChanged:
+    {
+      method = rb_intern("selection_changed_fire");
+      break;
+    }
   }
   if (NIL_P(method))
     return event;
