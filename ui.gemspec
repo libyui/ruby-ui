@@ -8,8 +8,9 @@ Gem::Specification.new do |s|
   s.authors     = ["Duncan Mac-Vicar P.", "Josef Reidinger"]
   s.email       = ["dmacvicar@suse.de", "jreidinger@suse.cz"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.licenses    = ["MIT"]
+  s.summary     = "Native ruby bindings to libyui."
+  s.description = "Ruby bindings to libyui written from scratch providing latest ruby features."
 
   s.rubyforge_project = "ui"
 

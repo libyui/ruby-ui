@@ -9,19 +9,22 @@ unless have_library('yui')
 end
 
 # only required for old YaST-tied yui
-base = case
-  when File.exist?('/usr/include/YaST2/yui') then '/usr/include/YaST2'
-  else '/usr/include'
-end
+base = if File.exist?('/usr/include/YaST2/yui')
+    '/usr/include/YaST2'
+  else
+    '/usr/include'
+  end
 
 find_header 'YUI.h', File.join(base, 'yui')
 
-$CFLAGS = "#{$CFLAGS} -g -fvisibility=hidden -I#{base} -I#{File.join(base, 'yui')}"
+$CFLAGS << " -g -fvisibility=hidden -I#{base} -I#{File.join(base, 'yui')}"
+$CXXFLAGS << " -g -fvisibility=hidden -I#{base} -I#{File.join(base, 'yui')}"
 
 if RbConfig::CONFIG['ruby_version'] =~ /1\.8/
-  $CFLAGS = "#{$CFLAGS} -DRUBY18_SUPPORT"
+  $CFLAGS << " -DRUBY18_SUPPORT"
 end
 
 $LIBS << " -lyui"
 
+create_header
 create_makefile('ui')
