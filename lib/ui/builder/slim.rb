@@ -1,6 +1,7 @@
 require 'temple'
 require 'slim/parser'
 require 'slim/filter'
+require 'slim/embedded'
 require 'slim/interpolation'
 require 'ui'
 require 'pp'
@@ -26,11 +27,10 @@ module UI
       end
 
       # @visibility private
-      class Compiler < ::Slim::Filter
-
-        set_default_options :dictionary => 'self',
-                            :partial => 'partial',
-                            :context => nil
+      class Generator < Temple::Generator
+        def call(exp)
+          compile(exp)
+        end
 
         def on_static(content)
           content.to_s
@@ -42,6 +42,7 @@ module UI
         end
 
         def parse_attributes attrs
+          return {} unless attrs.is_a? Array
           attributes = attrs[2..-1].reduce({}) do |acc,el|
             if el[0] == :slim #slim attrs
               acc[el[2].to_sym] = options[:context].instance_eval el[4];
@@ -55,6 +56,7 @@ module UI
         end
 
         def on_slim_tag(name, attrs, body)
+          return compile(body) if name == :text
           #support partials. Partials just need to pass in options :parent
           @current_parent = options[:parent] unless @current_parent
           previous_parent = @current_parent
@@ -66,7 +68,6 @@ module UI
             obj = UI::Builder.send("create_#{name}".to_sym)
           elsif UI::Builder::LEAF_ELEMENTS.include?(name_sym)
             text = compile(body)
-            pp text
             attributes[:id] ||= text.gsub(/\s|[-_:.]/,"_")
             obj = UI::Builder.send("create_#{name}".to_sym, @current_parent, text)
           elsif UI::Builder::CONTAINER_ELEMENTS.include?(name_sym)
@@ -81,20 +82,13 @@ module UI
           @current_parent = previous_parent
           obj
         end
-      end
 
-      # @visibility private
-      class Generator < Temple::Generator
-        def call(exp)
-          exp
-        end
+        alias_method :on_html_tag, :on_slim_tag
+        alias_method :on_slim, :on_slim_tag
       end
 
       # @visibility private
       class Evaluator < ::Slim::Filter
-        set_default_options :dictionary => 'self',
-                            :partial => 'partial',
-                            :context => nil
         def on_slim_output (*args)
           ret = options[:context].instance_eval(args[1])
           [:static,ret.to_s]
@@ -131,9 +125,6 @@ module UI
       # Filter class that merge statics together, evaluate outputs and clean newlines
       # @visibility private
       class Cleaner < ::Slim::Filter
-        set_default_options :dictionary => 'self',
-                            :partial => 'partial',
-                            :context => nil
 
         def on_multi(*exps)
           return compile(exps.first) if exps.size == 1
@@ -163,12 +154,10 @@ module UI
 
       # @visibility private
       class Engine < Temple::Engine
-        set_default_options :context => nil
-        use ::Slim::Parser, :file, :tabsize, :encoding, :shortcut, :default_tag
+        use ::Slim::Parser
         use ::Slim::Interpolation
-        use(:Evaluator) { Evaluator.new options }
-        use(:Cleaner) { Cleaner.new options }
-        use(:Compiler) { Compiler.new options }
+        use Evaluator
+        use Cleaner
         use Generator
       end
 
