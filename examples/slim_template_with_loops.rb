@@ -10,7 +10,7 @@ main_dialog
     - if false
       label wrong
     - 10.times do |i|
-      label test {i}
+      label test \#{i} abc
     push_button Ok
 EOF
 
