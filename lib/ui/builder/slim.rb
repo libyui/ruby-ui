@@ -1,4 +1,6 @@
 require 'temple'
+require 'temple/generators/string_buffer'
+require 'slim'
 require 'slim/parser'
 require 'slim/filter'
 require 'slim/embedded'
@@ -29,6 +31,7 @@ module UI
       # @visibility private
       class Generator < Temple::Generator
         def call(exp)
+          puts exp.inspect
           compile(exp)
         end
 
@@ -39,6 +42,11 @@ module UI
         def on_multi(*exps)
           return compile(exps.first) if exps.size == 1
           exps.map { |exp| compile(exp) }
+        end
+
+        def on_code(code)
+          puts code.inspect
+          code.to_s
         end
 
         def parse_attributes attrs
@@ -152,13 +160,61 @@ module UI
         end
       end
 
+      # Convert html tags to dynamic ruby code
+      # @visibility private
+      class ToRuby < ::Slim::Filter
+        def on_static(body)
+          [:static, "\""+body+"\""]
+        end
+
+        def parse_attributes attrs
+          return {} unless attrs.is_a? Array
+          attributes = attrs[2..-1].reduce({}) do |acc,el|
+            if el[0] == :slim #slim attrs
+              acc[el[2].to_sym] = options[:context].instance_eval el[4];
+            elsif el[0] == :html #match html attrs with static attr
+              acc[el[2].to_sym] = el[3][1];
+            else
+              raise "Unknown attribute #{el.inspect}"
+            end
+            acc
+          end
+        end
+
+        def on_slim_tag(name, attrs, body)
+          attributes = parse_attributes attrs
+          attrs_str = attributes.empty? ? "" : "#{attributes.inspect}"
+          if LEAF_ELEMENTS.include?(name.to_sym)
+            attrs_str.unshift ", " unless attrs_str.empty?
+            [:multi, 
+              [:static, "#{name} "],
+              compile(body),
+              [:static, attrs_str + "\n"]
+            ]
+          else
+            name = "UI." + name if TOPLEVEL_ELEMENTS.include?(name.to_sym)
+
+            [ :multi, 
+              [ :static, "#{name}#{ attrs_str } {\n"],
+              compile(body),
+              [ :static, "}\n" ]
+            ]
+          end
+        end
+        alias_method :on_html_tag, :on_slim_tag
+      end
+
       # @visibility private
       class Engine < Temple::Engine
         use ::Slim::Parser
         use ::Slim::Interpolation
+        use ::Slim::DoInserter
+        use ::Slim::EndInserter
+        use ::Slim::Controls
         use Evaluator
         use Cleaner
-        use Generator
+        use ToRuby
+        use ::Temple::Generators::StringBuffer
       end
 
     end
@@ -170,7 +226,9 @@ module UI
   # Builds a widget/dialog using a slim template
   # 
   # {include:file:examples/slim_template.rb}
-  def self.slim(io,options={})
-    UI::Builder::Slim::Engine.new(options).call(io)
+  def self.slim(io, context, options={})
+    code = eval UI::Builder::Slim::Engine.new(options).call(io)
+puts code
+    context.instance_eval code
   end
 end
