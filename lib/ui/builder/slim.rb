@@ -152,7 +152,7 @@ module UI
           attributes = parse_attributes attrs
           attrs_str = attributes.empty? ? "" : "#{attributes.inspect}"
           if LEAF_ELEMENTS.include?(name.to_sym)
-            attrs_str.unshift ", " unless attrs_str.empty?
+            attrs_str.prepend ", " unless attrs_str.empty?
             [:multi, 
               [:static, "#{name} "],
               compile(body),
