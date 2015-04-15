@@ -17,6 +17,7 @@ module UI
     def initialize_widget(el, opts)
       el.id = opts[:id] if opts.has_key?(:id)
       properties = el.properties
+      puts opts.inspect
       opts.each do |k,v|
         el[k] = v if properties.include? k
         if UI::Widget::CALLBACKS.include? k
@@ -37,12 +38,16 @@ module UI
           end
           # add parent if needed
           unless TOPLEVEL_ELEMENTS.include?(:#{element})
-            args.unshift(self)
+            args.unshift(@__ui_builder_parent)
           end
+          puts args.inspect
           el = Builder.create_#{element}(*args)
           initialize_widget(el, opts)
           unless LEAF_ELEMENTS.include?(:#{element})
-            el.instance_eval(&block)
+            old_parent = @__ui_builder_parent
+            @__ui_builder_parent = el
+            block.call
+            @__ui_builder_parent = old_parent
           end
           el
         end

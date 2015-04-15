@@ -136,11 +136,21 @@ module UI
 
         def parse_attributes attrs
           return {} unless attrs.is_a? Array
-          attributes = attrs[2..-1].reduce({}) do |acc,el|
+          puts attrs.inspect
+          attributes = attrs[2..-1].reduce("") do |acc,el|
+            acc << ", " unless acc.empty?
             if el[0] == :slim #slim attrs
-              acc[el[2].to_sym] = options[:context].instance_eval el[4];
+              acc << ":#{el[2]} => #{el[4]}"
             elsif el[0] == :html #match html attrs with static attr
-              acc[el[2].to_sym] = el[3][1];
+              el2 = el[3]
+              case el2[0]
+              when :slim
+                acc << ":#{el[2]} => #{el2[3]}"
+              when :escape
+                acc << ":#{el[2]} => #{el2[2][1]}"
+              else
+                 raise "unknown attr #{el.inspect}"
+              end
             else
               raise "Unknown attribute #{el.inspect}"
             end
@@ -149,20 +159,19 @@ module UI
         end
 
         def on_slim_tag(name, attrs, body)
-          attributes = parse_attributes attrs
-          attrs_str = attributes.empty? ? "" : "#{attributes.inspect}"
+          attrs_str = parse_attributes attrs
           if LEAF_ELEMENTS.include?(name.to_sym)
             attrs_str.prepend ", " unless attrs_str.empty?
             [:multi, 
               [:static, "#{name} "],
               compile(body),
-              [:static, attrs_str + "\n"]
+              [:dynamic, attrs_str + "\n"]
             ]
           else
-            name = "UI." + name if TOPLEVEL_ELEMENTS.include?(name.to_sym)
+            attrs_str = "("+attrs_str+")" unless attrs_str.empty?
 
             [ :multi, 
-              [ :static, "#{name}#{ attrs_str } {\n"],
+              [ :dynamic, "#{name}#{ attrs_str } {\n"],
               compile(body),
               [ :static, "}\n" ]
             ]
@@ -194,8 +203,10 @@ module UI
   # 
   # {include:file:examples/slim_template.rb}
   def self.slim(io, context, options={})
+    puts "Context: #{context.inspect}"
     code = UI::Builder::Slim::Engine.new(options).call(io)
-puts code
+    puts code
+    context.extend UI::Builder
     context.instance_eval code
   end
 end
