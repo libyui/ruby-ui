@@ -5,11 +5,11 @@ module UI
   module Builder
     TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
     CONTAINER_ELEMENTS = [:vbox, :hbox, :hstretch, :vstretch,
-                          :hspacing, :vspacing, :hsquash, :vsquash,
+                          :hsquash, :vsquash,
                           :hvsquash, :frame, :replace_point,
                           :left, :right, :top, :bottom, :hcenter, :vcenter,
                           :hvcenter, :margin_box, :radio_button_group]
-    LEAF_ELEMENTS = [:push_button, :input_field, :check_box, :radio_button,
+    LEAF_ELEMENTS = [:push_button, :input_field, :check_box, :radio_button, :hspacing, :vspacing,
                      :label, :progress_bar, :rich_text, :selection_box]
 
 
@@ -17,7 +17,6 @@ module UI
     def initialize_widget(el, opts)
       el.id = opts[:id] if opts.has_key?(:id)
       properties = el.properties
-      puts opts.inspect
       opts.each do |k,v|
         el[k] = v if properties.include? k
         if UI::Widget::CALLBACKS.include? k
@@ -40,7 +39,6 @@ module UI
           unless TOPLEVEL_ELEMENTS.include?(:#{element})
             args.unshift(@__ui_builder_parent)
           end
-          puts args.inspect
           el = Builder.create_#{element}(*args)
           initialize_widget(el, opts)
           unless LEAF_ELEMENTS.include?(:#{element})

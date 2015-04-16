@@ -147,7 +147,7 @@ module UI
               when :slim
                 acc << ":#{el[2]} => #{el2[3]}"
               when :escape
-                acc << ":#{el[2]} => #{el2[2][1]}"
+                acc << ":#{el[2]} => \"#{el2[2][1]}\""
               else
                  raise "unknown attr #{el.inspect}"
               end
@@ -162,9 +162,13 @@ module UI
           attrs_str = parse_attributes attrs
           if LEAF_ELEMENTS.include?(name.to_sym)
             attrs_str.prepend ", " unless attrs_str.empty?
+            body = compile(body)
+            if body.empty?
+              body = [:static, "\"\""] # ensure default empty value for leaf elements
+            end
             [:multi, 
               [:static, "#{name} "],
-              compile(body),
+              body,
               [:dynamic, attrs_str + "\n"]
             ]
           else
@@ -203,9 +207,8 @@ module UI
   # 
   # {include:file:examples/slim_template.rb}
   def self.slim(io, context, options={})
-    puts "Context: #{context.inspect}"
     code = UI::Builder::Slim::Engine.new(options).call(io)
-    puts code
+    # File.write("/tmp/ui.log", code)
     context.extend UI::Builder
     context.instance_eval code
   end

@@ -9,10 +9,10 @@ main_dialog
       input_field id="test2" Enter your name
       input_field id=15 Enter your name
     push_button id=2 Ok
-    push_button id=1 activated={ Proc.new { |event,dialog| event.widget[:Label] = event.widget[:Label]+"!";false }} Ok
+    push_button id=1 activated=Proc.new{|event,dialog| event.widget[:Label] = event.widget[:Label]+"!";false} Ok
 EOF
 
-dialog = UI.slim(template)
+dialog = UI.slim(template, binding)
 event = dialog.wait_for_event
 puts event.inspect
 event.widget[:Label] = "No longer OK"
