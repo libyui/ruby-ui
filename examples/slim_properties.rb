@@ -10,5 +10,5 @@ main_dialog
     push_button HStretch=false Ok
 EOF
 
-dialog = UI.slim(template)
+dialog = UI.slim(template, self)
 dialog.wait_for_event

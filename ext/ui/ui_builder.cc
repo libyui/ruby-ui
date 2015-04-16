@@ -301,9 +301,11 @@ static VALUE create_vspacing(int argc, VALUE *argv, VALUE self)
 
   rb_scan_args(argc, argv, "11", &parent, &size);
 
+  float value = size == Qnil ? 1.0 : NUM2DBL(rb_funcall(size, rb_intern("to_f"), 0));
+
   YWidget *ptr = ui_unwrap_widget(parent);
 
-  YSpacing *spc = YUI::widgetFactory()->createVSpacing(ptr, size == Qnil ? 1.0 : NUM2DBL(size));
+  YSpacing *spc = YUI::widgetFactory()->createVSpacing(ptr, value);
 
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);
@@ -324,8 +326,9 @@ static VALUE create_hspacing(int argc, VALUE *argv, VALUE self)
   rb_scan_args(argc, argv, "11", &parent, &size);
 
   YWidget *ptr = ui_unwrap_widget(parent);
+  float value = size == Qnil ? 1.0 : NUM2DBL(rb_funcall(size, rb_intern("to_f"), 0));
 
-  YSpacing *spc = YUI::widgetFactory()->createHSpacing(ptr, size == Qnil ? 1.0 : NUM2DBL(size));
+  YSpacing *spc = YUI::widgetFactory()->createHSpacing(ptr, value);
 
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);

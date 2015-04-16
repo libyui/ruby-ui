@@ -171,7 +171,7 @@ module UI
               body,
               [:dynamic, attrs_str + "\n"]
             ]
-          else
+          elsif (CONTAINER_ELEMENTS+TOPLEVEL_ELEMENTS).include?(name.to_sym)
             attrs_str = "("+attrs_str+")" unless attrs_str.empty?
 
             [ :multi, 
@@ -179,6 +179,8 @@ module UI
               compile(body),
               [ :static, "}\n" ]
             ]
+          else
+            raise "unknown element #{name}"
           end
         end
         alias_method :on_html_tag, :on_slim_tag
@@ -208,7 +210,7 @@ module UI
   # {include:file:examples/slim_template.rb}
   def self.slim(io, context, options={})
     code = UI::Builder::Slim::Engine.new(options).call(io)
-    # File.write("/tmp/ui.log", code)
+    File.write("/tmp/ui.log", code)
     context.extend UI::Builder
     context.instance_eval code
   end

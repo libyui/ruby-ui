@@ -2,7 +2,8 @@ $: << File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
 require 'ui'
 require 'pp'
 
-dialog = UI.main_dialog {
+include UI::Builder
+dialog = main_dialog {
   vbox(:id => :vbox1) {
     label "Press to add", :id => 'lbl1'
     hbox {

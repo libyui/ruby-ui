@@ -4,7 +4,8 @@ require 'ui/builder/slim'
 require 'pp'
 #require 'debugger'
 
-dialog = UI.main_dialog {
+include UI::Builder
+dialog = main_dialog {
   vbox(:id => :vbox1) {
     selection_box "Elements", :id => :box
     right {
