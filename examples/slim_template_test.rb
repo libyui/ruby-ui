@@ -1,6 +1,7 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
 require 'ui'
-require 'ui/builder/slim'
+
+include UI::Template
 
 template =<<EOF
 main_dialog
@@ -17,7 +18,7 @@ main_dialog
     push_button id=1 activated=Proc.new{|event,dialog| event.widget[:Label] = event.widget[:Label]+"!";false} Ok
 EOF
 
-dialog = UI.slim(template, binding)
+dialog = render text: template
 event = dialog.wait_for_event
 puts event.inspect
 event.widget[:Label] = "No longer OK"

@@ -6,6 +6,7 @@ require 'ui/dialog'
 require 'ui/widget'
 require 'ui/item'
 require 'ui/selection_widget'
+require 'ui/template'
 
 module UI
 

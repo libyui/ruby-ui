@@ -9,8 +9,7 @@ require 'ui'
 require 'pp'
 
 module UI
-  module Builder
-
+  module Template
     # This module allows to build user interfaces
     # using slim templates (http://www.slim-lang.org)
     #
@@ -160,7 +159,7 @@ module UI
 
         def on_slim_tag(name, attrs, body)
           attrs_str = parse_attributes attrs
-          if LEAF_ELEMENTS.include?(name.to_sym)
+          if Builder::LEAF_ELEMENTS.include?(name.to_sym)
             attrs_str.prepend ", " unless attrs_str.empty?
             body = compile(body)
             if body.empty?
@@ -171,7 +170,7 @@ module UI
               body,
               [:dynamic, attrs_str + "\n"]
             ]
-          elsif (CONTAINER_ELEMENTS+TOPLEVEL_ELEMENTS).include?(name.to_sym)
+          elsif (Builder::CONTAINER_ELEMENTS+Builder::TOPLEVEL_ELEMENTS).include?(name.to_sym)
             attrs_str = "("+attrs_str+")" unless attrs_str.empty?
 
             [ :multi, 
@@ -200,18 +199,25 @@ module UI
       end
 
     end
+
+    # Builds a widget/dialog using a slim template
+    # mandatory part of options is either :file or :text key that
+    # specify template
+    # 
+    # {include:file:examples/slim_template.rb}
+    def render(options={})
+      raise "specify template to render by file: or text: key" if !options[:file] && !options[:text]
+      io = options.delete(:text) || File.read(options.delete(:file))
+
+      options[:context] ||= self
+
+      code = UI::Template::Slim::Engine.new(options).call(io)
+      File.write("/tmp/ui.log", code)
+      puts options.inspect
+      options[:context].extend UI::Builder
+      options[:context].instance_eval code
+    end
+
   end
 end
 
-module UI
-
-  # Builds a widget/dialog using a slim template
-  # 
-  # {include:file:examples/slim_template.rb}
-  def self.slim(io, context, options={})
-    code = UI::Builder::Slim::Engine.new(options).call(io)
-    File.write("/tmp/ui.log", code)
-    context.extend UI::Builder
-    context.instance_eval code
-  end
-end
