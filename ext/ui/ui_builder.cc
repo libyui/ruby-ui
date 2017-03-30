@@ -291,12 +291,21 @@ static VALUE create_vstretch(VALUE self, VALUE parent)
 /*
  * @visibility private
  */
-static VALUE create_vspacing(VALUE self, VALUE parent)
+
+static VALUE create_vspacing(int argc, VALUE *argv, VALUE self)
 {
   YEXCEPTION_TRY
+
+  VALUE parent;
+  VALUE size;
+
+  rb_scan_args(argc, argv, "11", &parent, &size);
+
+  float value = size == Qnil ? 1.0 : NUM2DBL(rb_funcall(size, rb_intern("to_f"), 0));
+
   YWidget *ptr = ui_unwrap_widget(parent);
 
-  YSpacing *spc = YUI::widgetFactory()->createVSpacing(ptr);
+  YSpacing *spc = YUI::widgetFactory()->createVSpacing(ptr, value);
 
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);
@@ -307,12 +316,19 @@ static VALUE create_vspacing(VALUE self, VALUE parent)
 /*
  * @visibility private
  */
-static VALUE create_hspacing(VALUE self, VALUE parent)
+static VALUE create_hspacing(int argc, VALUE *argv, VALUE self)
 {
   YEXCEPTION_TRY
-  YWidget *ptr = ui_unwrap_widget(parent);
 
-  YSpacing *spc = YUI::widgetFactory()->createHSpacing(ptr);
+  VALUE parent;
+  VALUE size;
+
+  rb_scan_args(argc, argv, "11", &parent, &size);
+
+  YWidget *ptr = ui_unwrap_widget(parent);
+  float value = size == Qnil ? 1.0 : NUM2DBL(rb_funcall(size, rb_intern("to_f"), 0));
+
+  YSpacing *spc = YUI::widgetFactory()->createHSpacing(ptr, value);
 
   VALUE object = ui_wrap_spacing(spc);
   widget_object_map_add(spc, object);
@@ -414,8 +430,8 @@ void init_ui_ui_builder() {
 
   rb_define_singleton_method(mUIBuilder, "create_vstretch", RUBY_METHOD_FUNC(create_vstretch), 1);
   rb_define_singleton_method(mUIBuilder, "create_hstretch", RUBY_METHOD_FUNC(create_hstretch), 1);
-  rb_define_singleton_method(mUIBuilder, "create_vspacing", RUBY_METHOD_FUNC(create_vspacing), 1);
-  rb_define_singleton_method(mUIBuilder, "create_hspacing", RUBY_METHOD_FUNC(create_hspacing), 1);
+  rb_define_singleton_method(mUIBuilder, "create_vspacing", RUBY_METHOD_FUNC(create_vspacing), -1);
+  rb_define_singleton_method(mUIBuilder, "create_hspacing", RUBY_METHOD_FUNC(create_hspacing), -1);
 
   init_ui_ui_builder_alignment();
 

@@ -4,12 +4,13 @@ module UI
 
   module Builder
     TOPLEVEL_ELEMENTS = [:main_dialog, :popup_dialog]
-    CONTAINER_ELEMENTS = [:vbox, :hbox, :hstretch, :vstretch,
-                          :hspacing, :vspacing, :hsquash, :vsquash,
+    CONTAINER_ELEMENTS = [:vbox, :hbox,
+                          :hsquash, :vsquash,
                           :hvsquash, :frame, :replace_point,
                           :left, :right, :top, :bottom, :hcenter, :vcenter,
                           :hvcenter, :margin_box, :radio_button_group]
     LEAF_ELEMENTS = [:push_button, :input_field, :check_box, :radio_button,
+                     :hspacing, :vspacing, :hstretch, :vstretch,
                      :label, :progress_bar, :rich_text, :selection_box]
 
 
@@ -29,6 +30,7 @@ module UI
       LEAF_ELEMENTS].flatten.each do |element|
       eval <<-EOM #use eval as ruby 1.8 don't have define_method with block
         def #{element}(*args, &block)
+          File.write("/tmp/io.calls", "call #{element} with \#{args.inspect}")
           opts = {}
           # If last element is a Hash
           # we assume they are options
@@ -37,12 +39,15 @@ module UI
           end
           # add parent if needed
           unless TOPLEVEL_ELEMENTS.include?(:#{element})
-            args.unshift(self)
+            args.unshift(@__ui_builder_parent)
           end
           el = Builder.create_#{element}(*args)
           initialize_widget(el, opts)
           unless LEAF_ELEMENTS.include?(:#{element})
-            el.instance_eval(&block)
+            old_parent = @__ui_builder_parent
+            @__ui_builder_parent = el
+            block.call
+            @__ui_builder_parent = old_parent
           end
           el
         end

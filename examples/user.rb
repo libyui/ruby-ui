@@ -1,8 +1,9 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
 require 'ui'
-require 'ui/builder/slim'
 
-DIALOG_TEMPLATE = File.read(File.expand_path("../user_edit.yui",__FILE__))
+EDIT_DIALOG_TEMPLATE = File.expand_path("../user_edit.yui",__FILE__)
+SHOW_DIALOG_TEMPLATE = File.expand_path("../users.yui",__FILE__)
+
 class User
   ATTRS = [ :first_name, :surname, :hair, :skill, :beer ]
   ATTRS.each do |attr|
@@ -13,8 +14,10 @@ class User
   end
 end
 
+include UI::Template
+
 def edit_user user
-  dialog = UI.slim(DIALOG_TEMPLATE,:context => user)
+  dialog = render file: EDIT_DIALOG_TEMPLATE, context: user
   dialog.find(:clear).activated do |event,dialog|
     User::ATTRS.each { |a| dialog.find(a)[:Value] = "" }
     false
@@ -48,17 +51,8 @@ def add_user_to_dialog user,parent
 end
 
 def show_users users
-  dialog = UI.main_dialog {
-    vbox(:id => :main_box){
-      vbox(:id => :users ){
-      }
-      hbox {
-        push_button "cancel", :activated => Proc.new { :cancel }
-        push_button "save", :id => :save
-        push_button "add User", :id => :add
-      }
-    }
-  }
+  @users = users
+  dialog = render file: SHOW_DIALOG_TEMPLATE
   dialog.find(:save).activated do |event,dialog|
     path = UI.ask_for_existing_file Dir.pwd,"target File"
     puts users.to_json
@@ -73,7 +67,6 @@ def show_users users
     end
     false
   end
-  users.each { |u| add_user_to_dialog u,dialog.find(:users)}
   dialog.wait_for_event
 end
 

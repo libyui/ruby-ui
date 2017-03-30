@@ -1,0 +1,10 @@
+main_dialog
+  vbox id=:main_box
+    vbox id=:users
+      - @users.each do |user|
+        hbox
+          label Surname: #{user.surname}
+    hbox
+      push_button activated=Proc.new{ :cancel } Cancel
+      push_button id=:save Save
+      push_button id=:add add User

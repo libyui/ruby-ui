@@ -1,6 +1,7 @@
 $: << File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
 require 'ui'
-require 'ui/builder/slim'
+
+include UI::Template
 
 template =<<EOF
 main_dialog
@@ -10,5 +11,5 @@ main_dialog
     push_button HStretch=false Ok
 EOF
 
-dialog = UI.slim(template)
+dialog = render text: template
 dialog.wait_for_event

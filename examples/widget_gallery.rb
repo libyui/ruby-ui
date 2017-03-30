@@ -4,7 +4,9 @@ require 'ui/builder/slim'
 require 'pp'
 #require 'debugger'
 
-dialog = UI.main_dialog {
+include UI::Builder
+
+dialog = main_dialog {
   vbox {
     # row 1
     hbox(:id => :hbox1) {
@@ -12,6 +14,7 @@ dialog = UI.main_dialog {
         hvcenter {
           vbox {
             push_button "Enabled"
+            vspacing
             push_button "Disabled", :Enabled => false
           }
         }
